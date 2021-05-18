@@ -8,6 +8,6 @@ public class UnmodifiableMatrixElement extends MatrixElementImpl implements Matr
 
     @Override
     public void set(double value) {
-        throw new UnsupportedOperationException("пошел нахуй");
+        throw new UnsupportedOperationException("Using set operation for unmodifiable element");
     }
 }

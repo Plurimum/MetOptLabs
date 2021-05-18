@@ -1,7 +1,6 @@
 package com.mygdx.linear;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -20,10 +19,10 @@ public class TestGenerator {
     }
 
     private int generateSize(int minSize, int maxSize) {
-        return Math.max(minSize, random.nextInt(maxSize + 1));
+        return randomRange(minSize, maxSize + 1);
     }
 
-    private int random_range(int left, int right) {
+    private int randomRange(int left, int right) {
         return left + random.nextInt(right - left);
     }
 
@@ -70,8 +69,8 @@ public class TestGenerator {
         IntStream.range(0, n).forEach(i -> {
             double sum = 0;
             for (int j = 0; j < i; j++) {
-                final int a = random_range(L, R);
-                final int b = random_range(L, R);
+                final int a = randomRange(L, R);
+                final int b = randomRange(L, R);
                 matrix.get(i, j).set(a);
                 matrix.get(j, i).set(b);
                 sum += a + b;
@@ -90,6 +89,4 @@ public class TestGenerator {
         });
         return new ProfileMatrix(matrix);
     }
-
-
 }
