@@ -4,16 +4,20 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Test {
-    public static void main(String[] args) throws IOException {
-        for (int i = 0; i <= 4; i++) {
+    public static void main(String[] args) {
+        /*
+        for (int i = 0; i < 1; i++) {
             String fileName = "Test" + i + ".txt";
             try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(Paths.get(fileName)))) {
                 TestGenerator generator = new TestGenerator(writer);
-                generator.generateOne(20);
+                generator.generateOne(5);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -23,10 +27,40 @@ public class Test {
                 TestReader testReader = new TestReader(scanner);
                 ProfileMatrix profileMatrix = testReader.readProfileMatrix();
                 // System.out.println(profileMatrix);
+                System.out.println(new ArrayMatrix(profileMatrix));
                 System.out.println(ProfileMatrix.solveSystem(profileMatrix, testReader.readFreeCoefficients()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+
+
+        TestGenerator gen = new TestGenerator(null);
+        for (int n = 10; n <= 1000; n += 100) {
+            for (int k = 1; k < 20; ++k) {
+                final ProfileMatrix pm = gen.generateDiagonallyDominant(n, k);
+                final List<Double> correct = IntStream.range(1, n + 1).asDoubleStream().boxed().collect(Collectors.toList());
+                final Matrix temp = pm.multiply(new Vector(correct));
+                final List<Double> f = IntStream.range(0, n).mapToDouble(i -> temp.get(i, 0).get()).boxed().collect(Collectors.toList());
+                final List<Double> xk = ProfileMatrix.solveSystem(pm, f);
+                com.mygdx.nmethods.Vector v = new com.mygdx.nmethods.Vector(correct);
+                final double diff = v.add(new com.mygdx.nmethods.Vector(xk).multiply(-1)).length();
+                final double diffD = diff / v.length();
+                System.out.printf("n=%d, k=%d, |x*-x_k|=%f, |x*-x_k|/|x*|=%f%n%n", n, k, diff, diffD);
+            }
+        }
+         */
+        for (int n = 2; n <= 20; n++) {
+            ProfileMatrix pm = TestGenerator.generateHilbert(n);
+            final List<Double> correct = IntStream.range(1, n + 1).asDoubleStream().boxed().collect(Collectors.toList());
+            final Matrix temp = pm.multiply(new Vector(correct));
+            final List<Double> f = IntStream.range(0, n).mapToDouble(i -> temp.get(i, 0).get()).boxed().collect(Collectors.toList());
+            final List<Double> xk = ProfileMatrix.solveSystem(pm, f);
+            com.mygdx.nmethods.Vector v = new com.mygdx.nmethods.Vector(correct);
+            final double diff = v.add(new com.mygdx.nmethods.Vector(xk).multiply(-1)).length();
+            final double diffD = diff / v.length();
+            System.out.printf("n=%d, |x*-x_k|=%f, |x*-x_k|/|x*|=%f%n%n", n, diff, diffD);
         }
     }
 }

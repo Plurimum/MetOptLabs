@@ -5,10 +5,10 @@ import java.util.List;
 
 public class Profile {
 
-    private ArrayList<MatrixElement> values;
-    private ArrayList<Integer> separators;
+    private List<MatrixElement> values;
+    private List<Integer> separators;
 
-    public Profile(ArrayList<MatrixElement> values, ArrayList<Integer> separators) {
+    public Profile(List<MatrixElement> values, List<Integer> separators) {
         this.values = values;
         this.separators = separators;
     }

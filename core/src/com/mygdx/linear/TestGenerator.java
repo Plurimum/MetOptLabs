@@ -23,6 +23,10 @@ public class TestGenerator {
         return Math.max(minSize, random.nextInt(maxSize + 1));
     }
 
+    private int random_range(int left, int right) {
+        return left + random.nextInt(right - left);
+    }
+
     private int generateCount(int size) {
         return random.nextInt(Math.min((size - 1) * size / 2, 100));
     }
@@ -49,8 +53,7 @@ public class TestGenerator {
         writer.println();
     }
 
-    public void generateOne(int maxSize) {
-        int size = generateSize(2, maxSize);
+    public void generateOne(int size) {
         int r = generateCount(size);
         int c = generateCount(size);
         writer.println(size + " " + r + " " + c);
@@ -59,4 +62,34 @@ public class TestGenerator {
         printProfile(size, c);
         printElements(size);
     }
+
+    public ProfileMatrix generateDiagonallyDominant(final int n, final int k) {
+        final Matrix matrix = new ArrayMatrix(n, n);
+        final int L = -4;
+        final int R = 1;
+        IntStream.range(0, n).forEach(i -> {
+            double sum = 0;
+            for (int j = 0; j < i; j++) {
+                final int a = random_range(L, R);
+                final int b = random_range(L, R);
+                matrix.get(i, j).set(a);
+                matrix.get(j, i).set(b);
+                sum += a + b;
+            }
+            matrix.get(i, i).set(-sum + (i == 0 ? Math.pow(10, -k) : 0));
+        });
+        return new ProfileMatrix(matrix);
+    }
+
+    public static ProfileMatrix generateHilbert(int n) {
+        final Matrix matrix = new ArrayMatrix(n, n);
+        IntStream.range(0, n).forEach(i -> {
+            IntStream.range(0, n).forEach(j -> {
+                matrix.get(i, j).set(1. / ((i + 1) + (j + 1) - 1));
+            });
+        });
+        return new ProfileMatrix(matrix);
+    }
+
+
 }

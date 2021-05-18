@@ -20,4 +20,14 @@ public interface Matrix {
         return result;
     }
 
+    default Matrix subtract(final Matrix other) {
+        final ArrayMatrix result = new ArrayMatrix(nRows(), nColumns());
+        for (int i = 0; i < nRows(); i++) {
+            for (int j = 0; j < other.nColumns(); j++) {
+                result.get(i, j).set(get(i, j).get() - other.get(i, j).get());
+            }
+        }
+        return result;
+    }
+
 }

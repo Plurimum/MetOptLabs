@@ -1,7 +1,9 @@
 package com.mygdx.linear;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ProfileMatrix implements Matrix {
@@ -14,6 +16,28 @@ public class ProfileMatrix implements Matrix {
         this.diag = diag;
         this.rows = rows;
         this.columns = columns;
+    }
+
+    public ProfileMatrix(Matrix matrix) {
+        if (matrix.nColumns() != matrix.nRows()) {
+            throw new IllegalArgumentException("cerf");
+        }
+        diag = new ArrayList<>(matrix.nRows());
+        IntStream.range(0, matrix.nRows()).forEach(i -> diag.add(new MatrixElementImpl(matrix.get(i, i).get())));
+        List<MatrixElement> rValues = new ArrayList<>();
+        List<MatrixElement> cValues = new ArrayList<>();
+        List<Integer> rSeparators = IntStream.range(0, matrix.nRows()).boxed().collect(Collectors.toCollection(ArrayList::new));
+        for (int i = 0; i < matrix.nRows(); i++) {
+            for (int j = 0; j < i; j++) {
+                rValues.add(new MatrixElementImpl(matrix.get(i, j).get()));
+                cValues.add(new MatrixElementImpl(matrix.get(j, i).get()));
+            }
+            if (i > 0) {
+                rSeparators.set(i, rSeparators.get(i) + rSeparators.get(i - 1));
+            }
+        }
+        rows = new Profile(rValues, rSeparators);
+        columns = new Profile(cValues, Collections.unmodifiableList(rSeparators));
     }
 
     public int size() {
