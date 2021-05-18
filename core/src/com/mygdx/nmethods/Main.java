@@ -9,7 +9,7 @@ import java.util.function.Function;
 public class Main {
     public static void main(String[] args) {
         QuadraticFunction f = new ExpressionParser()
-                .parse("64 * x * x + 126 * x * y + 64 * y * y - 10 * x + 30 * y + 13");
+                .parse("7*x*x - 15 *x*y + 50 *y*y - 3*x + 4*y + 11");
         final double eps = 1e-3;
         List<Double> squareCoeffs = new ArrayList<>();
         int n = 10;

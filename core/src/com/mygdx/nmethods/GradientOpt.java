@@ -20,7 +20,7 @@ public class GradientOpt<F extends NFunction> extends AbstractNMethod<F> {
             return null;
         }
         Function<Double, Vector> func = t -> x.getValue().add(gradient.multiply(-t));
-        double alpha = methodCreator.apply(getFunction().compose(func)).findMin(0., (double) 2 / 50, eps);
+        double alpha = methodCreator.apply(getFunction().compose(func)).findMin(0., (double) 1.0, eps);
         return new Value<>(func.apply(alpha), getFunction());
     }
 }
