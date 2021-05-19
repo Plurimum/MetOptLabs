@@ -58,6 +58,7 @@ public class TestGenerator {
         int size = generateSize(2, maxSize);
         writer.println(size);
         printArrayMatrix(size);
+        printElements(size);
     }
 
 

@@ -39,16 +39,25 @@ public class ArrayMatrix implements Matrix {
 
 
     public static void addVec(final Matrix m, final int row, final MatrixElement coeff, final List<MatrixElement> vec) {
-        IntStream.range(0, m.nColumns()).forEach(col -> m.get(row, col).set(m.get(row, col).get() + vec.get(col).get() * coeff.get()));
+        IntStream.range(0, m.nColumns()).forEach(col ->
+            m.get(row, col).set(m.get(row, col).get() + (vec.get(col).get() * coeff.get())));
     }
 
     public static void mulVec(final Matrix m, final int row, final MatrixElement coeff) {
         IntStream.range(0, m.nColumns()).forEach(col -> m.get(row, col).set(m.get(row, col).get() * coeff.get()));
     }
 
+    public static void printSys(final Matrix a, final List<Double> b) {
+        IntStream.range(0, a.nRows()).forEach(rov -> {
+            IntStream.range(0, a.nColumns()).forEach(colum -> System.out.print(a.get(rov, colum).get() + " "));
+            System.out.println(b.get(rov));
+        });
+    }
+
     public static List<Double> solveSystem(final Matrix a, final List<Double> b) {
         assert a.nRows() == b.size();
         for (int i = 0; i < a.nRows(); i++) {
+            final int row = i;
             double aii = a.get(i, i).get();
             if (Math.abs(aii) < EPS) {
                 int ind = a.nRows() - 1;
@@ -59,25 +68,23 @@ public class ArrayMatrix implements Matrix {
                     // infinitely many solutions
                     return null;
                 }
-                final int iInd = i;
                 final int swapInd = ind;
                 List<MatrixElement> tmp = IntStream.range(0, a.nColumns()).mapToObj(
-                        c -> (MatrixElement) new MatrixElementImpl(a.get(iInd, c).get() - a.get(swapInd, c).get()))
+                        c -> (MatrixElement) new MatrixElementImpl(a.get(row, c).get() - a.get(swapInd, c).get()))
                         .collect(Collectors.toList());
                 MatrixElement one = new MatrixElementImpl(-1);
-                addVec(a, iInd, one, tmp);
+                addVec(a, row, one, tmp);
                 one.set(1);
                 addVec(a, swapInd, one, tmp);
             }
             MatrixElement d = new MatrixElementImpl(1 / aii);
             mulVec(a, i, d);
             b.set(i, b.get(i) * d.get());
+            List<MatrixElement> vec = IntStream.range(0, a.nColumns()).mapToObj(col -> a.get(row, col)).collect(Collectors.toList());
             for (int j = 0; j < a.nRows(); j++) {
                 if (i != j) {
-                    MatrixElement coeff = a.get(i, j);
-                    coeff.set(-coeff.get());
-                    final int row = i;
-                    addVec(a, j, coeff, IntStream.range(0, a.nColumns()).mapToObj(col -> a.get(row, col)).collect(Collectors.toList()));
+                    MatrixElement coeff = new MatrixElementImpl(-a.get(j, i).get());
+                    addVec(a, j, coeff, vec);
                     b.set(j, b.get(j) + coeff.get() * b.get(i));
                 }
             }

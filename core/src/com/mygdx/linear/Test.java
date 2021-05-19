@@ -35,7 +35,7 @@ public class Test {
             String fileName = "Test" + i + ".txt";
             try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(Paths.get(fileName)))) {
                 TestGenerator generator = new TestGenerator(writer);
-                generator.generateArrayOne(20);
+                generator.generateArrayOne(2);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
