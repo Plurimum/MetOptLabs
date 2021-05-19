@@ -30,6 +30,14 @@ public class TestReader {
         return readArrayList(() -> new MatrixElementImpl(scanner.nextDouble()), size);
     }
 
+    public ArrayMatrix readArrayMatrix() {
+        size = scanner.nextInt();
+        List<List<MatrixElement>> m = Stream.generate(() ->
+                Stream.generate(() -> (MatrixElement) new MatrixElementImpl(scanner.nextDouble())).limit(size).collect(Collectors.toList()))
+                .limit(size).collect(Collectors.toList());
+        return new ArrayMatrix(m);
+    }
+
     public ProfileMatrix readProfileMatrix() {
         size = scanner.nextInt();
         int rowsProfileSize = scanner.nextInt(), columnsProfileSize = scanner.nextInt();

@@ -49,7 +49,19 @@ public class TestGenerator {
         writer.println();
     }
 
-    public void generateOne(int maxSize) {
+
+    public void printArrayMatrix(int size) {
+        IntStream.range(0, size).forEach(i -> printElements(size));
+    }
+
+    public void generateArrayOne(int maxSize) {
+        int size = generateSize(2, maxSize);
+        writer.println(size);
+        printArrayMatrix(size);
+    }
+
+
+    public void generateProfileOne(int maxSize) {
         int size = generateSize(2, maxSize);
         int r = generateCount(size);
         int c = generateCount(size);
