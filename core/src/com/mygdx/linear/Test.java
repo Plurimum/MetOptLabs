@@ -54,6 +54,27 @@ public class Test {
                 return;
             }
         }
+        System.out.println("Testing Gauss");
+        for (int i = 5; i <= 8; i++) {
+            String fileName = "Test" + i + ".txt";
+            try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(Paths.get(fileName)))) {
+                TestGenerator generator = new TestGenerator(writer);
+                generator.generateArrayOne(20);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            try (Scanner scanner = new Scanner(Files.newBufferedReader(Paths.get(fileName))).useLocale(Locale.US)) {
+                TestReader testReader = new TestReader(scanner);
+                ArrayMatrix arrayMatrix = testReader.readArrayMatrix();
+                // System.out.println(profileMatrix);
+                System.out.println(ArrayMatrix.solveSystem(arrayMatrix, testReader.readFreeCoefficients()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         TestGenerator gen = new TestGenerator(null);
         for (int n = 10; n <= 1000; n += 100) {
             for (int k = 1; k < 20; ++k) {
@@ -79,5 +100,7 @@ public class Test {
             final double diffD = diff / v.length();
             System.out.printf("n=%d, |x*-x_k|=%f, |x*-x_k|/|x*|=%f%n%n", n, diff, diffD);
         }
+
+
     }
 }

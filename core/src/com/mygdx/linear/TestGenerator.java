@@ -62,6 +62,13 @@ public class TestGenerator {
         printElements(size);
     }
 
+    public void generateArrayOne(int size) {
+        int s = generateCount(size);
+        writer.println(s);
+        IntStream.range(0, s + 1).forEach(i -> printElements(s));
+    }
+
+
     public ProfileMatrix generateDiagonallyDominant(final int n, final int k) {
         final Matrix matrix = new ArrayMatrix(n, n);
         final int L = -4;
@@ -89,4 +96,6 @@ public class TestGenerator {
         });
         return new ProfileMatrix(matrix);
     }
+
+
 }
