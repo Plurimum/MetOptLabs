@@ -43,6 +43,14 @@ public class TestReader {
         return new ProfileMatrix(diag, rows, columns);
     }
 
+    public ArrayMatrix readArrayMatrix() {
+        size = scanner.nextInt();
+        List<List<MatrixElementImpl>> m = Stream.generate(() ->
+                Stream.generate(() -> new MatrixElementImpl(scanner.nextDouble())).limit(size).collect(Collectors.toList()))
+                .limit(size).collect(Collectors.toList());
+        return new ArrayMatrix(m);
+    }
+
     public List<Double> readFreeCoefficients() {
         return readArrayList(scanner::nextDouble, size);
     }
