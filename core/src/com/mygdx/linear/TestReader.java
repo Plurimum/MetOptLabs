@@ -51,6 +51,10 @@ public class TestReader {
         return new ArrayMatrix(m);
     }
 
+    public CSRMatrix readArrayAndSparsify() {
+        return new CSRMatrix(readArrayMatrix(), true);
+    }
+
     public List<Double> readFreeCoefficients() {
         return readArrayList(scanner::nextDouble, size);
     }

@@ -38,6 +38,10 @@ public class Vector extends AbstractList<Double> {
         return result;
     }
 
+    public List<Double> toList() {
+        return new ArrayList<>(this.coordinates);
+    }
+
     @Override
     public Double get(final int index) {
         return coordinates.get(index);
@@ -55,5 +59,10 @@ public class Vector extends AbstractList<Double> {
     @Override
     public boolean add(final Double elem) {
         return this.coordinates.add(elem);
+    }
+
+    @Override
+    public String toString() {
+        return coordinates.toString();
     }
 }

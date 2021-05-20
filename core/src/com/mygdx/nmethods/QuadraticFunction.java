@@ -2,7 +2,7 @@ package com.mygdx.nmethods;
 
 import java.util.List;
 
-public class QuadraticFunction implements NFunction {
+public class QuadraticFunction implements CGMFunction {
 
     private final int n;
     public final Matrix a;
@@ -39,6 +39,12 @@ public class QuadraticFunction implements NFunction {
         return result;
     }
 
+    @Override
+    public Vector matVecProd(Vector p) {
+        return a.multiply(p);
+    }
+
+    @Override
     public Vector gradient(Vector point) {
         return a.multiply(point).add(b);
     }
