@@ -76,8 +76,8 @@ public class Test {
         }
 
         TestGenerator gen = new TestGenerator(null);
-        for (int n = 10; n <= 1000; n += 100) {
-            for (int k = 1; k < 20; ++k) {
+        for (int n = 10; n <= 1000; n *= 10) {
+            for (int k = 1; k <= 15; ++k) {
                 final ProfileMatrix pm = gen.generateDiagonallyDominant(n, k);
                 final List<Double> correct = IntStream.range(1, n + 1).asDoubleStream().boxed().collect(Collectors.toList());
                 final Matrix temp = pm.multiply(new SingleColumnMatrix(correct));
