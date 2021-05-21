@@ -1,5 +1,7 @@
 package com.mygdx.linear;
 
+import com.mygdx.linear.bonus.CSRMatrix;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;

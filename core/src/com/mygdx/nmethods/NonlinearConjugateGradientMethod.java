@@ -1,6 +1,6 @@
 package com.mygdx.nmethods;
 
-public class NonlinearConjugateGradientMethod<F extends CGMFunction> extends QuadraticMethod<F> {
+public class NonlinearConjugateGradientMethod<F extends QuadraticFunction> extends QuadraticMethod<F> {
 
     private final int RESTART;
     private int counter = 0;
@@ -30,7 +30,7 @@ public class NonlinearConjugateGradientMethod<F extends CGMFunction> extends Qua
             return null;
         }
         counter = (counter + 1) % RESTART;
-        Vector mulResult = getFunction().matVecProd(p);
+        Vector mulResult = getFunction().a.multiply(p);
         double alpha = gradientLength * gradientLength / mulResult.scalarProduct(p);
         Value<Vector, Double> y = new Value<>(x.getValue().add(p.multiply(alpha)), getFunction());
         gradient = gradient.add(mulResult.multiply(alpha));

@@ -1,5 +1,6 @@
-package com.mygdx.linear;
+package com.mygdx.linear.bonus;
 
+import com.mygdx.linear.ArrayMatrix;
 import com.mygdx.nmethods.Vector;
 
 import java.util.ArrayList;
@@ -7,18 +8,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
+import com.mygdx.nmethods.Matrix;
 
-public class CSRMatrix {
+public class CSRMatrix extends com.mygdx.nmethods.Matrix {
     List<Double> vals;
     List<Integer> iCols;
     List<Integer> iRows;
+
+
+
     public CSRMatrix(List<Double> vals, List<Integer> iCols, List<Integer> iRows) {
+        super(new ArrayList<>());
         this.vals = vals;
         this.iCols = iCols;
         this.iRows = iRows;
     }
 
     public CSRMatrix(ArrayMatrix m, boolean sparsify) {
+        super(new ArrayList<>());
         if (sparsify) {
             m = sparsed(m);
         }
@@ -63,8 +70,19 @@ public class CSRMatrix {
 
     }
 
+    @Override
+    public double get(int i, int j) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Vector get(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Vector multiply(Vector x) {
-        List<Double> v = new ArrayList<>(Collections.nCopies(x.size(), new Double(0)));
+        List<Double> v = new ArrayList<>(Collections.nCopies(x.size(), 0.));
         for (int row = 0; row < iRows.size() - 1; row++) {
             for (int i = iRows.get(row); i < iRows.get(row + 1); i++) {
                 v.set(row, v.get(row) + vals.get(i) * x.get(iCols.get(i)));
@@ -73,6 +91,7 @@ public class CSRMatrix {
         return new Vector(v);
     }
 
+    @Override
     public int size() {
         return iRows.size() - 1;
     }
