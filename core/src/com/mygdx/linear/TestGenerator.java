@@ -62,10 +62,13 @@ public class TestGenerator {
         printElements(size);
     }
 
-    public void generateArrayOne(int size) {
-        int s = generateCount(size);
+    public void generateArrayOne(int size, boolean withVec) {
+        int s = generateSize(2, size);
         writer.println(s);
-        IntStream.range(0, s + 1).forEach(i -> printElements(s));
+        IntStream.range(0, s).forEach(i -> printElements(s));
+        if (withVec) {
+            printElements(s);
+        }
     }
 
 

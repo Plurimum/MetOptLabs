@@ -1,6 +1,8 @@
 package com.mygdx.linear;
 
 
+import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
+import com.mygdx.nmethods.Value;
 import com.mygdx.nmethods.Vector;
 
 import java.io.File;
@@ -9,9 +11,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -55,11 +55,11 @@ public class Test {
             }
         }
         System.out.println("Testing Gauss");
-        for (int i = 5; i <= 8; i++) {
+        for (int i = 100; i <= 104; i++) {
             String fileName = "Test" + i + ".txt";
             try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(Paths.get(fileName)))) {
                 TestGenerator generator = new TestGenerator(writer);
-                generator.generateArrayOne(20);
+                generator.generateArrayOne(20, true);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -70,6 +70,29 @@ public class Test {
                 ArrayMatrix arrayMatrix = testReader.readArrayMatrix();
                 // System.out.println(profileMatrix);
                 System.out.println(ArrayMatrix.solveSystem(arrayMatrix, testReader.readFreeCoefficients()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Testing CGM");
+        for (int i = 104; i <= 107; i++) {
+            String fileName = "Test" + i + ".txt";
+            try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(Paths.get(fileName)))) {
+                TestGenerator generator = new TestGenerator(writer);
+                generator.generateArrayOne(10, false);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            try (Scanner scanner = new Scanner(Files.newBufferedReader(Paths.get(fileName))).useLocale(Locale.US)) {
+                TestReader testReader = new TestReader(scanner);
+                CSRMatrix csrMatrix = testReader.readArrayAndSparsify();
+                Vector testVec = new Vector(new ArrayList<Double>(Collections.nCopies(csrMatrix.size(), 1.0)));
+                CgmSoleFunction fun = new CgmSoleFunction(csrMatrix, csrMatrix.multiply(testVec).toList());
+                NonlinearConjugateGradientMethod m = new NonlinearConjugateGradientMethod(fun);
+                System.out.println(m.findMin(1e-7));
             } catch (IOException e) {
                 e.printStackTrace();
             }
