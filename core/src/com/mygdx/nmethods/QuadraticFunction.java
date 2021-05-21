@@ -2,7 +2,7 @@ package com.mygdx.nmethods;
 
 import java.util.List;
 
-public class QuadraticFunction implements CGMFunction {
+public class QuadraticFunction implements NFunction {
 
     private final int n;
     public final Matrix a;
@@ -11,9 +11,9 @@ public class QuadraticFunction implements CGMFunction {
 
     public QuadraticFunction(final Matrix a, List<Double> b, final double c) {
         this.n = b.size();
-        if (a.stream().anyMatch(arr -> arr.size() != n) || a.size() != n) {
-            throw new IllegalArgumentException("Invalid arrays sizes " + n);
-        }
+//        if (a.stream().anyMatch(arr -> arr.size() != n) || a.size() != n) {
+//            throw new IllegalArgumentException("Invalid arrays sizes " + n);
+//        }
         this.a = a;
         this.b = new Vector(b);
         this.c = c;
@@ -39,10 +39,6 @@ public class QuadraticFunction implements CGMFunction {
         return result;
     }
 
-    @Override
-    public Vector matVecProd(Vector p) {
-        return a.multiply(p);
-    }
 
     @Override
     public Vector gradient(Vector point) {
