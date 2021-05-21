@@ -1,7 +1,9 @@
 package com.mygdx.linear;
 
 
+import com.mygdx.linear.bonus.CgmSoleFunction;
 import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
+import com.mygdx.nmethods.QuadraticFunction;
 import com.mygdx.nmethods.Value;
 import com.mygdx.nmethods.Vector;
 
@@ -88,10 +90,10 @@ public class Test {
 
             try (Scanner scanner = new Scanner(Files.newBufferedReader(Paths.get(fileName))).useLocale(Locale.US)) {
                 TestReader testReader = new TestReader(scanner);
-                CSRMatrix csrMatrix = testReader.readArrayAndSparsify();
+                com.mygdx.nmethods.Matrix csrMatrix = testReader.readArrayAndSparsify();
                 Vector testVec = new Vector(new ArrayList<Double>(Collections.nCopies(csrMatrix.size(), 1.0)));
-                CgmSoleFunction fun = new CgmSoleFunction(csrMatrix, csrMatrix.multiply(testVec).toList());
-                NonlinearConjugateGradientMethod m = new NonlinearConjugateGradientMethod(fun);
+                QuadraticFunction fun = new CgmSoleFunction(csrMatrix, csrMatrix.multiply(testVec).toList());
+                NonlinearConjugateGradientMethod<QuadraticFunction> m = new NonlinearConjugateGradientMethod<>(fun);
                 System.out.println(m.findMin(1e-7));
             } catch (IOException e) {
                 e.printStackTrace();
