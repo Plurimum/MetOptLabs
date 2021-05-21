@@ -99,8 +99,8 @@ public class Test {
         }
 
         TestGenerator gen = new TestGenerator(null);
-        for (int n = 10; n <= 1000; n += 100) {
-            for (int k = 1; k < 20; ++k) {
+        for (int n = 10; n <= 1000; n *= 10) {
+            for (int k = 1; k <= 15; ++k) {
                 final ProfileMatrix pm = gen.generateDiagonallyDominant(n, k);
                 final List<Double> correct = IntStream.range(1, n + 1).asDoubleStream().boxed().collect(Collectors.toList());
                 final Matrix temp = pm.multiply(new SingleColumnMatrix(correct));
@@ -109,7 +109,11 @@ public class Test {
                 Vector v = new Vector(correct);
                 final double diff = v.add(new Vector(xk).multiply(-1)).length();
                 final double diffD = diff / v.length();
-                System.out.printf("n=%d, k=%d, |x*-x_k|=%f, |x*-x_k|/|x*|=%f%n%n", n, k, diff, diffD);
+                if (Double.isNaN(diff) || Double.isInfinite(diff)) {
+                    System.out.printf("%d %d No solution No solution%n", n, k);
+                } else {
+                    System.out.printf("%d %d %1.7e %1.7e%n", n, k, diff, diffD);
+                }
             }
         }
         for (int n = 2; n <= 20; n++) {
@@ -123,7 +127,5 @@ public class Test {
             final double diffD = diff / v.length();
             System.out.printf("n=%d, |x*-x_k|=%f, |x*-x_k|/|x*|=%f%n%n", n, diff, diffD);
         }
-
-
     }
 }
