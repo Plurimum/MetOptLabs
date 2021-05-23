@@ -21,6 +21,17 @@ public class ArrayMatrix implements Matrix {
         this.matrix = matrix;
     }
 
+    public ArrayMatrix(Matrix m) {
+        matrix = Stream.generate(() ->
+                Stream.generate(MatrixElementImpl::new).limit(m.nColumns()).collect(Collectors.toList())
+        ).limit(m.nRows()).collect(Collectors.toList());
+        for (int i = 0; i < m.nRows(); i++) {
+            for (int j = 0; j < m.nColumns(); j++) {
+                get(i, j).set(m.get(i, j).get());
+            }
+        }
+    }
+
     @Override
     public MatrixElement get(int x, int y) {
         return matrix.get(x).get(y);
