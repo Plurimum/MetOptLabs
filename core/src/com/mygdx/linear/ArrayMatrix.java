@@ -68,17 +68,17 @@ public class ArrayMatrix implements Matrix {
     public static List<Double> solveSystem(final ArrayMatrix a, final List<Double> b) {
         for (int i = 0; i < a.nRows(); i++) {
             double aii = a.get(i, i).get();
-            if (Math.abs(aii) < EPS) {
-                int ind = a.nRows() - 1;
-                while (ind > i && Math.abs(a.get(ind, i).get()) < EPS) {
-                    ind--;
+            int indMax = 0;
+            for (int r = 0; r < a.nRows(); r++) {
+                if (Math.abs(a.get(indMax, i).get()) < Math.abs(a.get(r, i).get())) {
+                    indMax = r;
                 }
-                if (ind == i) {
-                    // infinitely many solutions
-                    return null;
-                }
-                Collections.swap(a.matrix, i, ind);
             }
+            if (Math.abs(a.get(indMax, i).get()) < EPS) {
+                // infinitely many solutions
+                return null;
+            }
+            Collections.swap(a.matrix, i, indMax);
             MatrixElementImpl d = new MatrixElementImpl(1 / aii);
             mulVec(a, i, d);
             b.set(i, b.get(i) * d.get());
