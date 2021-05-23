@@ -1,10 +1,10 @@
 package com.mygdx.linear;
 
 
+import com.mygdx.linear.bonus.CSRDiagonal;
+import com.mygdx.linear.bonus.CSRMatrix;
 import com.mygdx.linear.bonus.CgmSoleFunction;
-import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
-import com.mygdx.nmethods.QuadraticFunction;
-import com.mygdx.nmethods.Value;
+import com.mygdx.nmethods.*;
 import com.mygdx.nmethods.Vector;
 
 import java.io.File;
@@ -16,9 +16,11 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Test {
     public static void main(String[] args) {
+/*
         Path testsDir = Paths.get("Tests");
         try {
             Files.createDirectories(testsDir);
@@ -55,7 +57,7 @@ public class Test {
                 e.printStackTrace();
                 return;
             }
-        }
+        }*/
         System.out.println("Testing Gauss");
         for (int i = 100; i <= 104; i++) {
             String fileName = "Test" + i + ".txt";
@@ -77,6 +79,7 @@ public class Test {
             }
         }
 
+        /*
         System.out.println("Testing CGM");
         for (int i = 104; i <= 107; i++) {
             String fileName = "Test" + i + ".txt";
@@ -91,7 +94,7 @@ public class Test {
             try (Scanner scanner = new Scanner(Files.newBufferedReader(Paths.get(fileName))).useLocale(Locale.US)) {
                 TestReader testReader = new TestReader(scanner);
                 com.mygdx.nmethods.Matrix csrMatrix = testReader.readArrayAndSparsify();
-                Vector testVec = new Vector(new ArrayList<Double>(Collections.nCopies(csrMatrix.size(), 1.0)));
+                Vector testVec = new Vector(IntStream.range(0, csrMatrix.size()).asDoubleStream().boxed().collect(Collectors.toList()));
                 QuadraticFunction fun = new CgmSoleFunction(csrMatrix, csrMatrix.multiply(testVec).toList());
                 NonlinearConjugateGradientMethod<QuadraticFunction> m = new NonlinearConjugateGradientMethod<>(fun);
                 System.out.println(m.findMin(1e-7));
@@ -99,7 +102,22 @@ public class Test {
                 e.printStackTrace();
             }
         }
+*/
+        /*
+        Random gen = new Random();
+        for (int i = 0; i < 10; ++i) {
+            List<Double> diag = Stream.generate(gen::nextDouble).limit(8).collect(Collectors.toList());
+            com.mygdx.nmethods.Matrix csrMatrix = new CSRDiagonal(diag);
+            Vector testVec =
+                    new Vector(IntStream.range(0, csrMatrix.size()).mapToObj(Double::valueOf).collect(Collectors.toList()));
+            CgmSoleFunction fun = new CgmSoleFunction(csrMatrix, csrMatrix.multiply(testVec).toList());
+            NonlinearConjugateGradientMethod<CgmSoleFunction> m = new NonlinearConjugateGradientMethod<>(fun);
+            final Vector result = m.findMin(1e-7).stream().map(x -> x / 2).collect(Collectors.toCollection(Vector::new));
+            System.out.println(result);
+        }
+        */
 
+/*
         TestGenerator gen = new TestGenerator(null);
         for (int n = 10; n <= 1000; n *= 10) {
             for (int k = 1; k <= 15; ++k) {
@@ -129,5 +147,7 @@ public class Test {
             final double diffD = diff / v.length();
             System.out.printf("n=%d, |x*-x_k|=%f, |x*-x_k|/|x*|=%f%n%n", n, diff, diffD);
         }
+
+ */
     }
 }
