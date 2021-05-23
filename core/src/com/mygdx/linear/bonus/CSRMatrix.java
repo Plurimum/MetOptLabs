@@ -8,14 +8,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
-import com.mygdx.nmethods.Matrix;
+import com.mygdx.linear.Matrix;
 
 public class CSRMatrix extends com.mygdx.nmethods.Matrix {
     List<Double> vals;
     List<Integer> iCols;
     List<Integer> iRows;
-
-
+    final double EPS = 1e-8;
 
     public CSRMatrix(List<Double> vals, List<Integer> iCols, List<Integer> iRows) {
         super(new ArrayList<>());
@@ -24,7 +23,7 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
         this.iRows = iRows;
     }
 
-    public CSRMatrix(ArrayMatrix m, boolean sparsify) {
+    public CSRMatrix(Matrix m, boolean sparsify) {
         super(new ArrayList<>());
         if (sparsify) {
             m = sparsed(m);
@@ -40,7 +39,7 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
         iRows.add(currIRow);
         for (int i = 0; i < m.nRows(); i++) {
             for (int j = 0; j < m.nColumns(); j++) {
-                if (m.get(i, j).get() != 0.0) {
+                if (Math.abs(m.get(i, j).get()) > EPS) {
                     vals.add(m.get(i, j).get());
                     currIRow++;
                     iCols.add(j);
@@ -54,7 +53,7 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
         this(m, false);
     }
 
-    private static void symmetrize(ArrayMatrix m) {
+    private static void symmetrize(Matrix m) {
         for (int i = 0; i < m.nColumns(); i++) {
             for (int j = i + 1; j < m.nColumns(); j++) {
                 m.get(j, i).set(m.get(i, j).get());
@@ -62,7 +61,7 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
         }
     }
 
-    private static ArrayMatrix sparsed(ArrayMatrix m) {
+    private static ArrayMatrix sparsed(Matrix m) {
         Random random = new Random();
         final ArrayMatrix sparsed = new ArrayMatrix(m.nRows(), m.nColumns());
         IntStream.range(0, m.nRows()).forEach(i -> {
@@ -86,7 +85,7 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
     @Override
     public Vector multiply(Vector x) {
         List<Double> v = new ArrayList<>(Collections.nCopies(x.size(), 0.));
-        for (int row = 0; row < iRows.size() - 1; row++) {
+        for (int row = 0; row < size(); row++) {
             for (int i = iRows.get(row); i < iRows.get(row + 1); i++) {
                 v.set(row, v.get(row) + vals.get(i) * x.get(iCols.get(i)));
             }

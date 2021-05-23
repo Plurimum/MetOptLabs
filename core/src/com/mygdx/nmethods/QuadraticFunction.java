@@ -11,9 +11,6 @@ public class QuadraticFunction implements NFunction {
 
     public QuadraticFunction(final Matrix a, List<Double> b, final double c) {
         this.n = b.size();
-//        if (a.stream().anyMatch(arr -> arr.size() != n) || a.size() != n) {
-//            throw new IllegalArgumentException("Invalid arrays sizes " + n);
-//        }
         this.a = a;
         this.b = new Vector(b);
         this.c = c;
@@ -23,22 +20,11 @@ public class QuadraticFunction implements NFunction {
         this(new Matrix(a), b, c);
     }
 
-    @Override
-    public Double apply(Vector arg) {
-        double result = 0;
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                result += a.get(i, j) * arg.get(i) * arg.get(j);
-            }
-        }
-        result /= 2;
-        for (int i = 0; i < n; ++i) {
-            result += b.get(i) * arg.get(i);
-        }
-        result += c;
-        return result;
-    }
 
+    @Override
+    public Double apply(final Vector arg) {
+        return arg.scalarProduct(a.multiply(arg)) / 2 + arg.scalarProduct(b) + c;
+    }
 
     @Override
     public Vector gradient(Vector point) {
