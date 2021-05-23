@@ -21,6 +21,17 @@ public class ArrayMatrix implements Matrix {
         this.matrix = matrix;
     }
 
+    public ArrayMatrix(Matrix m) {
+        matrix = Stream.generate(() ->
+                Stream.generate(MatrixElementImpl::new).limit(m.nColumns()).collect(Collectors.toList())
+        ).limit(m.nRows()).collect(Collectors.toList());
+        for (int i = 0; i < m.nRows(); i++) {
+            for (int j = 0; j < m.nColumns(); j++) {
+                get(i, j).set(m.get(i, j).get());
+            }
+        }
+    }
+
     @Override
     public MatrixElement get(int x, int y) {
         return matrix.get(x).get(y);
@@ -53,20 +64,32 @@ public class ArrayMatrix implements Matrix {
         });
     }
 
+    @Override
+    public String toString() {
+        String r = "";
+        for (int row = 0; row < nRows(); row++) {
+            for (int col = 0; col < nColumns(); col++) {
+                r += get(row, col).get() + " ";
+            }
+            r += '\n';
+        }
+       return r;
+    }
+
     public static List<Double> solveSystem(final ArrayMatrix a, final List<Double> b) {
         for (int i = 0; i < a.nRows(); i++) {
             double aii = a.get(i, i).get();
-            if (Math.abs(aii) < EPS) {
-                int ind = a.nRows() - 1;
-                while (ind > i && Math.abs(a.get(ind, i).get()) < EPS) {
-                    ind--;
+            int indMax = 0;
+            for (int r = 0; r < a.nRows(); r++) {
+                if (Math.abs(a.get(indMax, i).get()) < Math.abs(a.get(r, i).get())) {
+                    indMax = r;
                 }
-                if (ind == i) {
-                    // infinitely many solutions
-                    return null;
-                }
-                Collections.swap(a.matrix, i, ind);
             }
+            if (Math.abs(a.get(indMax, i).get()) < EPS) {
+                // infinitely many solutions
+                return null;
+            }
+            Collections.swap(a.matrix, i, indMax);
             MatrixElementImpl d = new MatrixElementImpl(1 / aii);
             mulVec(a, i, d);
             b.set(i, b.get(i) * d.get());
