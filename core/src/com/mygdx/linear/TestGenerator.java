@@ -1,5 +1,7 @@
 package com.mygdx.linear;
 
+import com.mygdx.linear.bonus.CSRMatrix;
+
 import java.io.PrintWriter;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -98,6 +100,26 @@ public class TestGenerator {
             });
         });
         return new ProfileMatrix(matrix);
+    }
+
+    public CSRMatrix generateDiagonallyDominantCSR(final int n, final int k) {
+        final ArrayMatrix matrix = new ArrayMatrix(n, n);
+        final int L = -4;
+        final int R = 1;
+        IntStream.range(0, n).forEach(i -> {
+            double sum = 0;
+            for (int j = 0; j < i; j++) {
+                if (random.nextDouble() > 0.9) {
+                    final int a = randomRange(L, R);
+                    final int b = randomRange(L, R);
+                    matrix.get(i, j).set(a);
+                    matrix.get(j, i).set(b);
+                    sum += a + b;
+                }
+            }
+            matrix.get(i, i).set(-sum + (i == 0 ? 1 : 0));
+        });
+        return new CSRMatrix(matrix, false);
     }
 
 

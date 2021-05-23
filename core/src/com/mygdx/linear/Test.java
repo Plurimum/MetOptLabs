@@ -58,6 +58,7 @@ public class Test {
                 return;
             }
         }*/
+        /*
         System.out.println("Testing Gauss");
         for (int i = 100; i <= 104; i++) {
             String fileName = "Test" + i + ".txt";
@@ -78,31 +79,29 @@ public class Test {
                 e.printStackTrace();
             }
         }
+*/
 
-        /*
         System.out.println("Testing CGM");
-        for (int i = 104; i <= 107; i++) {
-            String fileName = "Test" + i + ".txt";
-            try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(Paths.get(fileName)))) {
-                TestGenerator generator = new TestGenerator(writer);
-                generator.generateArrayOne(10, false);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-
-            try (Scanner scanner = new Scanner(Files.newBufferedReader(Paths.get(fileName))).useLocale(Locale.US)) {
-                TestReader testReader = new TestReader(scanner);
-                com.mygdx.nmethods.Matrix csrMatrix = testReader.readArrayAndSparsify();
-                Vector testVec = new Vector(IntStream.range(0, csrMatrix.size()).asDoubleStream().boxed().collect(Collectors.toList()));
-                QuadraticFunction fun = new CgmSoleFunction(csrMatrix, csrMatrix.multiply(testVec).toList());
-                NonlinearConjugateGradientMethod<QuadraticFunction> m = new NonlinearConjugateGradientMethod<>(fun);
-                System.out.println(m.findMin(1e-7));
-            } catch (IOException e) {
-                e.printStackTrace();
+        final TestGenerator generator = new TestGenerator(null);
+        for (int n = 10; n <= 1000; n *= 10) {
+            for (int k = 1; k <= 15; ++k) {
+                CSRMatrix matrix = generator.generateDiagonallyDominantCSR(n, k);
+                Vector testVec = new Vector(IntStream.range(0, matrix.size()).asDoubleStream().boxed().collect(Collectors.toList()));
+                CgmSoleFunction fun = new CgmSoleFunction(matrix, matrix.multiply(testVec).toList());
+                NonlinearConjugateGradientMethod<CgmSoleFunction> m = new NonlinearConjugateGradientMethod<>(fun);
+                final Vector result = m.findMin(1e-7).stream().map(x -> x / 2).collect(Collectors.toCollection(Vector::new));
+                System.out.println(testVec);
+                System.out.println(result);
+                final double diff = testVec.add(result.multiply(-1)).length();
+                final double diffD = diff / testVec.length();
+                if (Double.isNaN(diff) || Double.isInfinite(diff)) {
+                    System.out.printf("%d %d No_solution No_solution%n", n, k);
+                } else {
+                    System.out.printf("%d %d %1.7e %1.7e%n", n, k, diff, diffD);
+                }
             }
         }
-*/
+
         /*
         Random gen = new Random();
         for (int i = 0; i < 10; ++i) {
@@ -147,7 +146,8 @@ public class Test {
             final double diffD = diff / v.length();
             System.out.printf("n=%d, |x*-x_k|=%f, |x*-x_k|/|x*|=%f%n%n", n, diff, diffD);
         }
-
  */
     }
+
+
 }
