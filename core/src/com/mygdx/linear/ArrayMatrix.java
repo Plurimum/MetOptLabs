@@ -53,6 +53,18 @@ public class ArrayMatrix implements Matrix {
         });
     }
 
+    @Override
+    public String toString() {
+        String r = "";
+        for (int row = 0; row < nRows(); row++) {
+            for (int col = 0; col < nColumns(); col++) {
+                r += get(row, col).get() + " ";
+            }
+            r += '\n';
+        }
+       return r;
+    }
+
     public static List<Double> solveSystem(final ArrayMatrix a, final List<Double> b) {
         for (int i = 0; i < a.nRows(); i++) {
             double aii = a.get(i, i).get();

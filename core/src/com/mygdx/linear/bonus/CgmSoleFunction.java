@@ -19,7 +19,7 @@ public class CgmSoleFunction extends QuadraticFunction {
 
     @Override
     public Double apply(Vector arg) {
-        return arg.scalarProduct(a.multiply(arg)) / 2 - 2 * arg.scalarProduct(b);
+        return arg.scalarProduct(a.multiply(arg)) + 20  -  arg.scalarProduct(b) * 500;
     }
 
 

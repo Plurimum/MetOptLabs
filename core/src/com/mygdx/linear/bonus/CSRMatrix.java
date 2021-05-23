@@ -28,8 +28,11 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
         super(new ArrayList<>());
         if (sparsify) {
             m = sparsed(m);
+//            System.out.println(m);
         }
         symmetrize(m);
+//        System.out.println(m);
+
         int currIRow = 0;
         iRows = new ArrayList<>();
         iCols = new ArrayList<>();
@@ -90,6 +93,7 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
         }
         return new Vector(v);
     }
+
 
     @Override
     public int size() {
