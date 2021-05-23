@@ -78,7 +78,6 @@ public class ArrayMatrix implements Matrix {
 
     public static List<Double> solveSystem(final ArrayMatrix a, final List<Double> b) {
         for (int i = 0; i < a.nRows(); i++) {
-            double aii = a.get(i, i).get();
             int indMax = 0;
             for (int r = 0; r < a.nRows(); r++) {
                 if (Math.abs(a.get(indMax, i).get()) < Math.abs(a.get(r, i).get())) {
@@ -90,6 +89,7 @@ public class ArrayMatrix implements Matrix {
                 return null;
             }
             Collections.swap(a.matrix, i, indMax);
+            double aii = a.get(i, i).get();
             MatrixElementImpl d = new MatrixElementImpl(1 / aii);
             mulVec(a, i, d);
             b.set(i, b.get(i) * d.get());

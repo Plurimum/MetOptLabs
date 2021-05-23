@@ -84,17 +84,17 @@ public class Test {
         System.out.println("Testing CGM");
         final TestGenerator generator = new TestGenerator(null);
         for (int n = 10; n <= 1000; n *= 10) {
-            for (int k = 1; k <= 15; ++k) {
-                CSRMatrix matrix = generator.generateDiagonallyDominantCSR(n, k);
-                Vector testVec = new Vector(IntStream.range(0, matrix.size()).asDoubleStream().boxed().collect(Collectors.toList()));
+            for (int k = 1; k <= 3; ++k) {
+                CSRMatrix matrix = generator.generateDiagonallyDominantCSR(n);
+                Vector testVec = new Vector(IntStream.range(1, 1 + matrix.size()).asDoubleStream().boxed().collect(Collectors.toList()));
                 CgmSoleFunction fun = new CgmSoleFunction(matrix, matrix.multiply(testVec).toList());
                 NonlinearConjugateGradientMethod<CgmSoleFunction> m = new NonlinearConjugateGradientMethod<>(fun);
                 final Vector result = m.findMin(1e-7).stream().map(x -> x / 2).collect(Collectors.toCollection(Vector::new));
-                System.out.println(testVec);
-                System.out.println(result);
+                // System.out.println(testVec);
+                // System.out.println(result);
                 final double diff = testVec.add(result.multiply(-1)).length();
                 final double diffD = diff / testVec.length();
-                if (Double.isNaN(diff) || Double.isInfinite(diff)) {
+                if (result.stream().anyMatch(x -> x == 0.) || Double.isNaN(diff) || Double.isInfinite(diff)) {
                     System.out.printf("%d %d No_solution No_solution%n", n, k);
                 } else {
                     System.out.printf("%d %d %1.7e %1.7e%n", n, k, diff, diffD);
@@ -147,6 +147,7 @@ public class Test {
             System.out.printf("n=%d, |x*-x_k|=%f, |x*-x_k|/|x*|=%f%n%n", n, diff, diffD);
         }
  */
+
         TestGenerator gen = new TestGenerator(null);
         for (int n = 10; n <= 1000; n *= 10) {
             for (int k = 1; k <= 15; ++k) {
@@ -169,6 +170,8 @@ public class Test {
                 }
             }
         }
+
+
     }
 
 

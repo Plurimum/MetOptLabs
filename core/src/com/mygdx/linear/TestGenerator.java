@@ -102,14 +102,17 @@ public class TestGenerator {
         return new ProfileMatrix(matrix);
     }
 
-    public CSRMatrix generateDiagonallyDominantCSR(final int n, final int k) {
+    public CSRMatrix generateDiagonallyDominantCSR(final int n) {
         final ArrayMatrix matrix = new ArrayMatrix(n, n);
         final int L = -4;
         final int R = 1;
-        IntStream.range(0, n).forEach(i -> {
-            double sum = 0;
+        IntStream.range(1, n).forEach(i -> {
+            int randomIndex = randomRange(0, i);
+            double sum = randomRange(L, R);
+            matrix.get(i, randomIndex).set(sum);
+
             for (int j = 0; j < i; j++) {
-                if (random.nextDouble() > 0.9) {
+                if (j != randomIndex && random.nextDouble() > (n - 10.) / n) {
                     final int a = randomRange(L, R);
                     final int b = randomRange(L, R);
                     matrix.get(i, j).set(a);
@@ -117,8 +120,9 @@ public class TestGenerator {
                     sum += a + b;
                 }
             }
-            matrix.get(i, i).set(-sum + (i == 0 ? 1 : 0));
+            matrix.get(i, i).set(-sum);
         });
+        matrix.get(0, 0).set(1);
         return new CSRMatrix(matrix, false);
     }
 
