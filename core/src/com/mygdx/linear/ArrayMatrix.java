@@ -89,6 +89,8 @@ public class ArrayMatrix implements Matrix {
                 return null;
             }
             Collections.swap(a.matrix, i, indMax);
+            Collections.swap(b, i, indMax);
+
             double aii = a.get(i, i).get();
             MatrixElementImpl d = new MatrixElementImpl(1 / aii);
             mulVec(a, i, d);

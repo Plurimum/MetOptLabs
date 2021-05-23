@@ -161,12 +161,8 @@ public class Test {
                 final double diffD = diff / v.length();
                 if (Double.isNaN(diff) || Double.isInfinite(diff)) {
                     System.out.printf("%d %d No solution No solution%n", n, k);
-                    System.out.println("xk = " + xk);
-                    System.out.println("v = " + v );
                 } else {
                     System.out.printf("%d %d %1.7e %1.7e%n", n, k, diff, diffD);
-                    System.out.println("xk = " + xk);
-                    System.out.println("v = " + v );
                 }
             }
         }
