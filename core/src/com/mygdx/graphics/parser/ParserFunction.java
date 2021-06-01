@@ -24,15 +24,15 @@ public class ParserFunction extends QuadraticFunction {
 
     public ParserFunction add(final QuadraticFunction other) {
         final List<List<Double>> ra = new ArrayList<>();
-        IntStream.range(0, getN()).forEach(i -> ra.add(i, a.get(i).add(other.a.get(i))));
-        return new ParserFunction(ra, b.add(other.b), c + other.c);
+        IntStream.range(0, getN()).forEach(i -> ra.add(i, getA().get(i).add(other.getA().get(i))));
+        return new ParserFunction(ra, getB().add(other.getB()), getC() + other.getC());
     }
 
     public ParserFunction multiply(final QuadraticFunction other) {
         final List<List<Double>> ra = new ArrayList<>();
-        ra.add(Arrays.asList(2 * b.get(0) * other.b.get(0), b.get(0) * b.get(1) + other.b.get(1) * b.get(0)));
-        ra.add(Arrays.asList(b.get(0) * b.get(1) + other.b.get(1) * b.get(0), 2 * b.get(1) * other.b.get(1)));
-        return new ParserFunction(ra, b.multiply(other.c).add(other.b.multiply(c)), other.c * c);
+        ra.add(Arrays.asList(2 * getB().get(0) * other.getB().get(0), getB().get(0) * getB().get(1) + other.getB().get(1) * getB().get(0)));
+        ra.add(Arrays.asList(getB().get(0) * getB().get(1) + other.getB().get(1) * getB().get(0), 2 * getB().get(1) * other.getB().get(1)));
+        return new ParserFunction(ra, getB().multiply(other.getC()).add(other.getB().multiply(getC())), other.getC() * getC());
     }
 
     public ParserFunction negative() {

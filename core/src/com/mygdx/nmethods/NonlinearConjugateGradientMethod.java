@@ -30,7 +30,7 @@ public class NonlinearConjugateGradientMethod<F extends QuadraticFunction> exten
             return null;
         }
         counter = (counter + 1) % RESTART;
-        Vector mulResult = getFunction().a.multiply(p);
+        Vector mulResult = getFunction().getA().multiply(p);
         double alpha = gradientLength * gradientLength / mulResult.scalarProduct(p);
         Value<Vector, Double> y = new Value<>(x.getValue().add(p.multiply(alpha)), getFunction());
         gradient = gradient.add(mulResult.multiply(alpha));
