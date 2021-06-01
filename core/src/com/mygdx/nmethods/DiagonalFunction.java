@@ -5,7 +5,7 @@ import java.util.List;
 public class DiagonalFunction extends QuadraticFunction {
 
     public DiagonalFunction(List<Double> a, List<Double> b, double c) {
-        super(new DiagonalMatrix(a), b, c);
+        super(new DiagonalMatrixImpl(a), b, c);
     }
 
     @Override

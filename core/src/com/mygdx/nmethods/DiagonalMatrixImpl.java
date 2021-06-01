@@ -4,8 +4,8 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DiagonalMatrix extends Matrix{
-    public DiagonalMatrix(List<Double> a) {
+public class DiagonalMatrixImpl extends MatrixImpl {
+    public DiagonalMatrixImpl(List<Double> a) {
         super(generateDiagonal(a));
     }
 

@@ -2,6 +2,7 @@ package com.mygdx.linear.bonus;
 
 import com.mygdx.linear.ArrayMatrix;
 import com.mygdx.linear.Matrix;
+import com.mygdx.nmethods.MatrixImpl;
 import com.mygdx.nmethods.Vector;
 
 import java.util.ArrayList;
@@ -10,13 +11,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-public class CSRMatrix extends com.mygdx.nmethods.Matrix {
+public class CSRMatrixImpl extends MatrixImpl {
     protected final List<Double> vals;
     protected final List<Integer> iCols;
     protected final List<Integer> iRows;
     final double EPS = 1e-8;
 
-    public CSRMatrix(List<Double> vals, List<Integer> iCols, List<Integer> iRows) {
+    public CSRMatrixImpl(List<Double> vals, List<Integer> iCols, List<Integer> iRows) {
         // условия корректной квадратной матрицы:
         // |iRows[i] - iRows[i-1]| <= n \forall i
         // iCols.count(num) <= n \forall num
@@ -29,7 +30,7 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
         this.iRows = iRows;
     }
 
-    public CSRMatrix(Matrix m, boolean modify) {
+    public CSRMatrixImpl(Matrix m, boolean modify) {
         super(new ArrayList<>());
         if (modify) {
             m = sparsed(m);
@@ -53,7 +54,7 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
         }
     }
 
-    public CSRMatrix(Matrix m) {
+    public CSRMatrixImpl(final Matrix m) {
         this(m, false);
     }
 
@@ -97,7 +98,7 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
     }
 
     // юзлесс, но вдруг пригодится
-    public CSRMatrix transposed() {
+    public CSRMatrixImpl transposed() {
         List<Double> tVals = new ArrayList<>(Collections.nCopies(vals.size(), 0.));;
         List<Integer> tIRows = new ArrayList<>(Collections.nCopies(iRows.size(), 0));;
         List<Integer> tICols = new ArrayList<>(Collections.nCopies(iCols.size(), 0));
@@ -117,7 +118,7 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
             }
         }
 
-        return new CSRMatrix(tVals, tICols, tIRows);
+        return new CSRMatrixImpl(tVals, tICols, tIRows);
     }
 
 

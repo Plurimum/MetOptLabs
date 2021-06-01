@@ -1,16 +1,6 @@
 package com.mygdx.linear;
 
 
-import com.mygdx.linear.bonus.CSRMatrix;
-import com.mygdx.linear.bonus.CgmSoleFunction;
-import com.mygdx.linear.bonus.HashMapMatrix;
-import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
-import com.mygdx.nmethods.QuadraticFunction;
-import com.mygdx.nmethods.Vector;
-
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 public class Test {
     public static void main(String[] args) {
 /*

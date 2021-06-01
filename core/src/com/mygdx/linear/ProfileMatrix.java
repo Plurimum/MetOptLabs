@@ -11,6 +11,7 @@ public class ProfileMatrix implements SystemSolveMatrix {
     private final ArrayList<MatrixElement> diag;
     private final Profile rows;
     private final Profile columns;
+    private MatrixPair decomposedLU = null;
 
     public ProfileMatrix(ArrayList<MatrixElement> diag, Profile rows, Profile columns) {
         this.diag = diag;
@@ -74,25 +75,28 @@ public class ProfileMatrix implements SystemSolveMatrix {
     }
 
     public MatrixPair LU() {
-        for (int i = 0; i < size(); i++) {
-            for (int j = start(i, rows); j < i; j++) {
-                MatrixElement lowerIJ = get(i, j);
-                for (int k = maxStart(i, j); k < j; k++) {
-                    lowerIJ.set(lowerIJ.get() - get(i, k).get() * get(k, j).get());
+        if (decomposedLU == null)  {
+            for (int i = 0; i < size(); i++) {
+                for (int j = start(i, rows); j < i; j++) {
+                    MatrixElement lowerIJ = get(i, j);
+                    for (int k = maxStart(i, j); k < j; k++) {
+                        lowerIJ.set(lowerIJ.get() - get(i, k).get() * get(k, j).get());
+                    }
+                }
+                for (int j = start(i, columns); j < i; j++) {
+                    MatrixElement uji = get(j, i);
+                    for (int k = maxStart(j, i); k < j; k++) {
+                        uji.set(uji.get() - get(j, k).get() * get(k, i).get());
+                    }
+                    uji.set(uji.get() / get(j, j).get());
+                }
+                for (int k = maxStart(i, i); k < i; k++) {
+                    get(i, i).set(get(i, i).get() - get(i, k).get() * get(k, i).get());
                 }
             }
-            for (int j = start(i, columns); j < i; j++) {
-                MatrixElement uji = get(j, i);
-                for (int k = maxStart(j, i); k < j; k++) {
-                    uji.set(uji.get() - get(j, k).get() * get(k, i).get());
-                }
-                uji.set(uji.get() / get(j, j).get());
-            }
-            for (int k = maxStart(i, i); k < i; k++) {
-                get(i, i).set(get(i, i).get() - get(i, k).get() * get(k, i).get());
-            }
+            decomposedLU = new MatrixPair(this);
         }
-        return new MatrixPair(this);
+        return decomposedLU;
     }
 
     @Override

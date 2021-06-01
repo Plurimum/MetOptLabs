@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class CSRDiagonal extends CSRMatrix {
+public class CSRDiagonal extends CSRMatrixImpl {
     public CSRDiagonal(List<Double> vals) {
         super(vals, IntStream.range(0, vals.size()).boxed().collect(Collectors.toList()),
                 IntStream.range(0, vals.size() + 1).boxed().collect(Collectors.toList()));

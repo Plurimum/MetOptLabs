@@ -5,11 +5,11 @@ import java.util.List;
 public class QuadraticFunction implements NFunction {
 
     private final int n;
-    private final Matrix a;
+    private final DoubleMatrix a;
     private final Vector b;
     private final double c;
 
-    public QuadraticFunction(final Matrix a, List<Double> b, final double c) {
+    public QuadraticFunction(final DoubleMatrix a, List<Double> b, final double c) {
         this.n = b.size();
         this.a = a;
         this.b = new Vector(b);
@@ -17,9 +17,8 @@ public class QuadraticFunction implements NFunction {
     }
 
     public QuadraticFunction(final List<List<Double>> a, List<Double> b, final double c) {
-        this(new Matrix(a), b, c);
+        this(new MatrixImpl(a), b, c);
     }
-
 
     @Override
     public Double apply(final Vector arg) {
@@ -36,7 +35,7 @@ public class QuadraticFunction implements NFunction {
         return n;
     }
 
-    public Matrix getA() {
+    public DoubleMatrix getA() {
         return a;
     }
 

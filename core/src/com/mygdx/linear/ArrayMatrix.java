@@ -18,8 +18,19 @@ public class ArrayMatrix implements SystemSolveMatrix {
         ).limit(rows).collect(Collectors.toList());
     }
 
-    public ArrayMatrix(final List<List<MatrixElementImpl>> matrix) {
+    public ArrayMatrix(final List<List<MatrixElementImpl>> matrix, int y) {
         this.matrix = matrix;
+    }
+
+    public ArrayMatrix(final List<? extends List<Double>> m) {
+        matrix = Stream.generate(() ->
+                Stream.generate(MatrixElementImpl::new).limit(m.size()).collect(Collectors.toList())
+        ).limit(m.size()).collect(Collectors.toList());
+        for (int i = 0; i < m.size(); i++) {
+            for (int j = 0; j < m.get(i).size(); j++) {
+                get(i, j).set(m.get(i).get(j));
+            }
+        }
     }
 
     public ArrayMatrix(final Matrix m) {
