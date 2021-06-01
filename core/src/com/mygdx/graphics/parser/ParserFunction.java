@@ -1,6 +1,5 @@
 package com.mygdx.graphics.parser;
 
-import com.mygdx.nmethods.Matrix;
 import com.mygdx.nmethods.QuadraticFunction;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.mygdx.linear;
 
-import com.mygdx.linear.bonus.CSRMatrixImpl;
+import com.mygdx.linear.bonus.CSRMatrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +53,8 @@ public class TestReader {
         return new ArrayMatrix(m, 1);
     }
 
-    public CSRMatrixImpl readArrayAndSparsify() {
-        return new CSRMatrixImpl(readArrayMatrix(), true);
+    public CSRMatrix readArrayAndSparsify() {
+        return new CSRMatrix(readArrayMatrix(), true);
     }
 
     public List<Double> readFreeCoefficients() {

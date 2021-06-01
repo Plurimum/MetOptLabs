@@ -1,35 +1,16 @@
 package com.mygdx.newton;
 
 import com.mygdx.linear.Matrix;
-import com.mygdx.nmethods.DoubleMatrix;
-import com.mygdx.nmethods.Vector;
+import com.mygdx.nmethods.MatrixImpl;
 
-import java.util.AbstractList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public class MatrixImplProxy<M extends Matrix> extends AbstractList<Vector> implements DoubleMatrix {
+public class MatrixImplProxy extends MatrixImpl {
 
-    final private M matrix;
-
-    public MatrixImplProxy(final M matrix) {
-        this.matrix = matrix;
-    }
-
-    @Override
-    public double get(final int r, final int c) {
-        return matrix.get(r, c).get();
-    }
-
-    @Override
-    public Vector get(final int index) {
-        throw new UnsupportedOperationException("get(index)");
-    }
-
-    @Override
-    public int size() {
-        return matrix.nRows();
-    }
-
-    public M getMatrix() {
-        return matrix;
+    public MatrixImplProxy(final Matrix matrix) {
+        super(IntStream.range(0, matrix.nRows()).mapToObj(i ->
+                IntStream.range(0, matrix.nColumns()).mapToObj(j ->
+                        matrix.get(i, j).get()).collect(Collectors.toList())).collect(Collectors.toList()));
     }
 }

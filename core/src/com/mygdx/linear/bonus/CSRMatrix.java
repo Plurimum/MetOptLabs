@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-public class CSRMatrixImpl extends MatrixImpl {
+public class CSRMatrix extends MatrixImpl {
     protected final List<Double> vals;
     protected final List<Integer> iCols;
     protected final List<Integer> iRows;
     final double EPS = 1e-8;
 
-    public CSRMatrixImpl(List<Double> vals, List<Integer> iCols, List<Integer> iRows) {
+    public CSRMatrix(List<Double> vals, List<Integer> iCols, List<Integer> iRows) {
         // условия корректной квадратной матрицы:
         // |iRows[i] - iRows[i-1]| <= n \forall i
         // iCols.count(num) <= n \forall num
@@ -30,7 +30,7 @@ public class CSRMatrixImpl extends MatrixImpl {
         this.iRows = iRows;
     }
 
-    public CSRMatrixImpl(Matrix m, boolean modify) {
+    public CSRMatrix(Matrix m, boolean modify) {
         super(new ArrayList<>());
         if (modify) {
             m = sparsed(m);
@@ -54,7 +54,7 @@ public class CSRMatrixImpl extends MatrixImpl {
         }
     }
 
-    public CSRMatrixImpl(final Matrix m) {
+    public CSRMatrix(final Matrix m) {
         this(m, false);
     }
 
@@ -98,7 +98,7 @@ public class CSRMatrixImpl extends MatrixImpl {
     }
 
     // юзлесс, но вдруг пригодится
-    public CSRMatrixImpl transposed() {
+    public CSRMatrix transposed() {
         List<Double> tVals = new ArrayList<>(Collections.nCopies(vals.size(), 0.));;
         List<Integer> tIRows = new ArrayList<>(Collections.nCopies(iRows.size(), 0));;
         List<Integer> tICols = new ArrayList<>(Collections.nCopies(iCols.size(), 0));
@@ -118,7 +118,7 @@ public class CSRMatrixImpl extends MatrixImpl {
             }
         }
 
-        return new CSRMatrixImpl(tVals, tICols, tIRows);
+        return new CSRMatrix(tVals, tICols, tIRows);
     }
 
 
