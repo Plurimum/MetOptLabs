@@ -1,8 +1,5 @@
 package com.mygdx.nmethods;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class DiagonalFunction extends QuadraticFunction {
@@ -15,7 +12,7 @@ public class DiagonalFunction extends QuadraticFunction {
     public Vector gradient(Vector point) {
         Vector result = new Vector();
         for (int i = 0; i < point.size(); i++) {
-            result.add(point.get(i) * a.get(i, i) + b.get(i));
+            result.add(point.get(i) * getA().get(i, i) + getB().get(i));
         }
         return result;
     }
@@ -24,9 +21,9 @@ public class DiagonalFunction extends QuadraticFunction {
     public Double apply(Vector arg) {
         double result = 0.;
         for (int i = 0; i < arg.size(); i++) {
-            result += arg.get(i) * arg.get(i) * a.get(i, i) / 2 + arg.get(i) * b.get(i);
+            result += arg.get(i) * arg.get(i) * getA().get(i, i) / 2 + arg.get(i) * getB().get(i);
         }
-        result += c;
+        result += getC();
         return result;
     }
 }

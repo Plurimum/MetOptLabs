@@ -5,9 +5,9 @@ import java.util.List;
 public class QuadraticFunction implements NFunction {
 
     private final int n;
-    public final Matrix a;
-    public final Vector b;
-    public final double c;
+    private final Matrix a;
+    private final Vector b;
+    private final double c;
 
     public QuadraticFunction(final Matrix a, List<Double> b, final double c) {
         this.n = b.size();
@@ -36,4 +36,15 @@ public class QuadraticFunction implements NFunction {
         return n;
     }
 
+    public Matrix getA() {
+        return a;
+    }
+
+    public Vector getB() {
+        return b;
+    }
+
+    public double getC() {
+        return c;
+    }
 }

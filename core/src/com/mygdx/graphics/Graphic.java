@@ -5,17 +5,15 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.nmethods.QuadraticFunction;
 import com.mygdx.nmethods.Value;
 import com.mygdx.nmethods.Vector;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
 
 public class Graphic extends Actor implements InputProcessor {
 
@@ -151,9 +149,9 @@ public class Graphic extends Actor implements InputProcessor {
         double t2 = Double.POSITIVE_INFINITY;
         for (double x = xl; x < xr(); x += STEP) {
             DoublePair solve = solveQuadraticEquation(
-                    f.a.get(1).get(1) / 2,
-                    f.a.get(0).get(1) * x + f.b.get(1),
-                    f.a.get(0).get(0) / 2 * sqr(x) + f.b.get(0) * x + f.c - level);
+                    f.getA().get(1).get(1) / 2,
+                    f.getA().get(0).get(1) * x + f.getB().get(1),
+                    f.getA().get(0).get(0) / 2 * sqr(x) + f.getB().get(0) * x + f.getC() - level);
             drawLine(x - STEP, t1, x, solve.getKey(), width);
             drawLine(x - STEP, t2, x, solve.getValue(), width);
             t1 = solve.getKey();
@@ -163,9 +161,9 @@ public class Graphic extends Actor implements InputProcessor {
         t1 = t2 = Double.POSITIVE_INFINITY;
         for (double y = yl; y < yr(); y += STEP) {
             DoublePair solve = solveQuadraticEquation(
-                    f.a.get(0).get(0) / 2,
-                    f.a.get(0).get(1) * y + f.b.get(0),
-                    f.a.get(1).get(1) / 2 * sqr(y) + f.b.get(1) * y + f.c - level);
+                    f.getA().get(0).get(0) / 2,
+                    f.getA().get(0).get(1) * y + f.getB().get(0),
+                    f.getA().get(1).get(1) / 2 * sqr(y) + f.getB().get(1) * y + f.getC() - level);
             drawLine(t1, y - STEP, solve.getKey(), y, width);
             drawLine(t2, y - STEP, solve.getValue(), y, width);
 

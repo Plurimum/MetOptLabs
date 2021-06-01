@@ -11,7 +11,7 @@ public class RenderFunction extends QuadraticFunction {
     public final List<Value<Vector, Double>> renderPoints = new ArrayList<>();
 
     public RenderFunction(QuadraticFunction other) {
-        super(other.a, other.b, other.c);
+        super(other.getA(), other.getB(), other.getC());
     }
 
     public RenderFunction(final List<List<Double>> a, final List<Double> b, final double c) {
