@@ -23,13 +23,12 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
         this.iRows = iRows;
     }
 
-    public CSRMatrix(Matrix m, boolean sparsify) {
+    public CSRMatrix(Matrix m, final boolean sparsify) {
         super(new ArrayList<>());
         if (sparsify) {
             m = sparsed(m);
 //            System.out.println(m);
         }
-        symmetrize(m);
 //        System.out.println(m);
 
         int currIRow = 0;
@@ -53,8 +52,8 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
         this(m, false);
     }
 
-    private static void symmetrize(Matrix m) {
-        for (int i = 0; i < m.nColumns(); i++) {
+    private static void toSymmetric(Matrix m) {
+        for (int i = 0; i < m.nRows(); i++) {
             for (int j = i + 1; j < m.nColumns(); j++) {
                 m.get(j, i).set(m.get(i, j).get());
             }
