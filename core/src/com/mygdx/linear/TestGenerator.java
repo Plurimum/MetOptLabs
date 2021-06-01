@@ -1,8 +1,15 @@
 package com.mygdx.linear;
 
+import com.mygdx.linear.bonus.CSRMatrix;
+import com.mygdx.linear.bonus.SymmetricHashMapMatrix;
+
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class TestGenerator {
 
@@ -100,5 +107,29 @@ public class TestGenerator {
         return new ProfileMatrix(matrix);
     }
 
+    public static ArrayMatrix generateHilbertArray(int n) {
+        final Matrix matrix = new ArrayMatrix(n, n);
+        IntStream.range(0, n).forEach(i -> {
+            IntStream.range(0, n).forEach(j -> {
+                matrix.get(i, j).set(1. / ((i + 1) + (j + 1) - 1));
+            });
+        });
+        return new ArrayMatrix(matrix);
+    }
 
+    public CSRMatrix generateDiagonallyDominantCSR(final int n) {
+        final int L = -4;
+        final int R = 1;
+        final int perRow = 2;
+        final List<Double> vals = Stream.generate(random::nextDouble).limit((long) perRow * n).collect(Collectors.toList());
+        final List<Integer> iRow = new ArrayList<>();
+        int next = 0;
+        for (int i = 0; i < n; ++i) {
+            iRow.add(next);
+            next += perRow;
+        }
+        iRow.add(next);
+        final List<Integer> iCols = Stream.generate(() -> randomRange(0, n)).limit(vals.size()).collect(Collectors.toList());
+        return new CSRMatrix(new SymmetricHashMapMatrix(n, n, vals, iRow, iCols), false);
+    }
 }

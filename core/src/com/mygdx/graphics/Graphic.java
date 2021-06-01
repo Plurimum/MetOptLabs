@@ -135,8 +135,10 @@ public class Graphic extends Actor implements InputProcessor {
     }
 
     private static DoublePair solveQuadraticEquation(double a, double b, double c) {
-        double d = sqr(b) - 4 * a * c;
-        assert d >= 0;
+        final double d = sqr(b) - 4 * a * c;
+        if (d <= 0) {
+            return new DoublePair(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+        }
         return new DoublePair((-b + Math.sqrt(d)) / (2 * a), (-b - Math.sqrt(d)) / (2 * a));
     }
 
