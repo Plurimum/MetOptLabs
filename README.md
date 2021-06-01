@@ -1,8 +1,8 @@
-# MetOptLab2
-2-dimen gradient methods
+# MetOptLab3
+Решение многомерных систем линейных уравнений
 
-[Градиентный спуск](https://github.com/avtakhov/MetOptLab2/blob/master/core/src/com/mygdx/nmethods/GradientMethod.java)
+[Профильная матрица и метод LU разложения](core/src/com/mygdx/linear/ProfileMatrix.java)
 
-[Метод наискорейшего спуска](https://github.com/avtakhov/MetOptLab2/blob/master/core/src/com/mygdx/nmethods/GradientOpt.java)
+[Плотная матрица и метод Гаусса](core/src/com/mygdx/linear/ArrayMatrix.java)
 
-[Сопряженные градиенты](https://github.com/avtakhov/MetOptLab2/blob/master/core/src/com/mygdx/nmethods/NonlinearConjugateGradientMethod.java)
+[Сопряженные градиенты](core/src/com/mygdx/nmethods/NonlinearConjugateGradientMethod.java)
