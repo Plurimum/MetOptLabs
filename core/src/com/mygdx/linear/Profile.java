@@ -5,23 +5,12 @@ import java.util.List;
 
 public class Profile {
 
-    private List<MatrixElement> values;
-    private List<Integer> separators;
+    private final List<MatrixElement> values;
+    private final List<Integer> separators;
 
     public Profile(List<MatrixElement> values, List<Integer> separators) {
         this.values = values;
         this.separators = separators;
-    }
-
-    public Profile() {
-        values = new ArrayList<>();
-        separators = new ArrayList<>();
-    }
-
-    @Override
-    public String toString() {
-        //TODO
-        return null;
     }
 
     public List<MatrixElement> get(int index) {

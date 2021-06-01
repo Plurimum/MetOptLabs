@@ -2,7 +2,7 @@ package com.mygdx.linear;
 
 public class UnmodifiableMatrixElement extends MatrixElementImpl implements MatrixElement {
 
-    UnmodifiableMatrixElement(double value) {
+    public UnmodifiableMatrixElement(double value) {
         super(value);
     }
 

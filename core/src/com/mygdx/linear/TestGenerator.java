@@ -9,7 +9,7 @@ public class TestGenerator {
     private final PrintWriter writer;
     private final Random random;
 
-    TestGenerator(PrintWriter writer) {
+    public TestGenerator(PrintWriter writer) {
         this.writer = writer;
         this.random = new Random();
     }

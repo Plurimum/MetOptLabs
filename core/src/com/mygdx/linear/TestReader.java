@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class TestReader {
@@ -18,7 +17,7 @@ public class TestReader {
         this.scanner = scanner;
     }
 
-    private static <T> ArrayList<T> readArrayList(Supplier<T> supplier, int size) {
+    private static <T> ArrayList<T> readArrayList(final Supplier<T> supplier, final int size) {
         return Stream
                 .generate(supplier)
                 .limit(size)

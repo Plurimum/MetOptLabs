@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class ProfileMatrix implements Matrix {
+public class ProfileMatrix implements SystemSolveMatrix {
 
     private final ArrayList<MatrixElement> diag;
     private final Profile rows;
@@ -65,52 +65,34 @@ public class ProfileMatrix implements Matrix {
         }
     }
 
-    private static int start(int index, Profile p) {
+    private int start(final int index, final Profile p) {
         return index - p.get(index).size();
     }
 
-    private static int maxStart(int i, int j, ProfileMatrix matrix) {
-        return Math.max(start(i, matrix.rows), start(j, matrix.columns));
+    private int maxStart(int i, int j) {
+        return Math.max(start(i, rows), start(j, columns));
     }
 
-    public static MatrixPair LU(ProfileMatrix matrix) {
-        for (int i = 0; i < matrix.size(); i++) {
-            for (int j = start(i, matrix.rows); j < i; j++) {
-                MatrixElement lowerIJ = matrix.get(i, j);
-                for (int k = maxStart(i, j, matrix); k < j; k++) {
-                    lowerIJ.set(lowerIJ.get() - matrix.get(i, k).get() * matrix.get(k, j).get());
+    public MatrixPair LU() {
+        for (int i = 0; i < size(); i++) {
+            for (int j = start(i, rows); j < i; j++) {
+                MatrixElement lowerIJ = get(i, j);
+                for (int k = maxStart(i, j); k < j; k++) {
+                    lowerIJ.set(lowerIJ.get() - get(i, k).get() * get(k, j).get());
                 }
             }
-            for (int j = start(i, matrix.columns); j < i; j++) {
-                MatrixElement uji = matrix.get(j, i);
-                for (int k = maxStart(j, i, matrix); k < j; k++) {
-                    uji.set(uji.get() - matrix.get(j, k).get() * matrix.get(k, i).get());
+            for (int j = start(i, columns); j < i; j++) {
+                MatrixElement uji = get(j, i);
+                for (int k = maxStart(j, i); k < j; k++) {
+                    uji.set(uji.get() - get(j, k).get() * get(k, i).get());
                 }
-                uji.set(uji.get() / matrix.get(j, j).get());
+                uji.set(uji.get() / get(j, j).get());
             }
-            for (int k = maxStart(i, i, matrix); k < i; k++) {
-                matrix.get(i, i).set(matrix.get(i, i).get() - matrix.get(i, k).get() * matrix.get(k, i).get());
-            }
-        }
-        return new MatrixPair(matrix);
-    }
-
-    public static List<Double> solveSystem(ProfileMatrix a, List<Double> b) {
-        final MatrixPair decomposed = LU(a);
-        final Matrix l = decomposed.getL();
-        final List<Double> result = new ArrayList<>(b);
-        IntStream.range(0, l.nRows()).forEach(i -> {
-            IntStream.range(i - a.rows.get(i).size(), i).forEach(j -> {
-                result.set(i, result.get(i) - result.get(j) * a.get(i, j).get());
-            });
-            result.set(i, result.get(i) / l.get(i, i).get());
-        });
-        for (int j = a.nColumns() - 1; j >= 0; j--) {
-            for (int i = j - a.columns.get(j).size(); i < j; i++) {
-                result.set(i, result.get(i) - result.get(j) * a.get(i, j).get());
+            for (int k = maxStart(i, i); k < i; k++) {
+                get(i, i).set(get(i, i).get() - get(i, k).get() * get(k, i).get());
             }
         }
-        return result;
+        return new MatrixPair(this);
     }
 
     @Override
@@ -121,5 +103,23 @@ public class ProfileMatrix implements Matrix {
     @Override
     public int nColumns() {
         return size();
+    }
+
+    @Override
+    public List<Double> solve(final List<Double> free) {
+        final MatrixPair decomposed = LU();
+        final Matrix l = decomposed.getL();
+        final List<Double> result = new ArrayList<>(free);
+        IntStream.range(0, l.nRows()).forEach(i -> {
+            IntStream.range(i - rows.get(i).size(), i).forEach(j ->
+                    result.set(i, result.get(i) - result.get(j) * get(i, j).get()));
+            result.set(i, result.get(i) / l.get(i, i).get());
+        });
+        for (int j = nColumns() - 1; j >= 0; j--) {
+            for (int i = j - columns.get(j).size(); i < j; i++) {
+                result.set(i, result.get(i) - result.get(j) * get(i, j).get());
+            }
+        }
+        return result;
     }
 }

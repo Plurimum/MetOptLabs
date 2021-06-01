@@ -1,22 +1,15 @@
 package com.mygdx.linear;
 
 
-import com.mygdx.linear.bonus.CSRDiagonal;
 import com.mygdx.linear.bonus.CSRMatrix;
 import com.mygdx.linear.bonus.CgmSoleFunction;
-import com.mygdx.nmethods.*;
+import com.mygdx.linear.bonus.HashMapMatrix;
+import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
+import com.mygdx.nmethods.QuadraticFunction;
 import com.mygdx.nmethods.Vector;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class Test {
     public static void main(String[] args) {
@@ -106,17 +99,7 @@ public class Test {
 //        }
 ////*/
         System.out.println("Testing CGM");
-        for (int i = 0; i < 5; i++) {
-            HashMapMatrix hm = HashMapMatrix.generateSparced(10);
-            hm.symmetrize();
 
-
-            com.mygdx.nmethods.Matrix csrMatrix = new CSRMatrix(hm, false);
-            Vector testVec = new Vector(IntStream.range(0, csrMatrix.size()).asDoubleStream().boxed().collect(Collectors.toList()));
-            QuadraticFunction fun = new CgmSoleFunction(csrMatrix, csrMatrix.multiply(testVec).toList());
-            NonlinearConjugateGradientMethod<QuadraticFunction> m = new NonlinearConjugateGradientMethod<>(fun);
-            System.out.println(m.findMin(1e-7));
-        }
         /*
         Random gen = new Random();
         for (int i = 0; i < 10; ++i) {

@@ -1,7 +1,7 @@
 package com.mygdx.linear;
 
 public class MatrixPair {
-    private ProfileMatrix matrix;
+    private final ProfileMatrix matrix;
 
     public MatrixPair(ProfileMatrix matrix) {
         this.matrix = matrix;

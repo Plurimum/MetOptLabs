@@ -1,11 +1,16 @@
-package com.mygdx.linear;
+package com.mygdx.linear.bonus;
+
+import com.mygdx.linear.Matrix;
+import com.mygdx.linear.MatrixElement;
+import com.mygdx.linear.MatrixElementImpl;
+import com.mygdx.linear.UnmodifiableMatrixElement;
 
 import java.util.HashMap;
 import java.util.Random;
 import java.util.stream.IntStream;
 
 public class HashMapMatrix extends HashMap<Integer, MatrixElement>  implements Matrix {
-    private int size;
+    private final int size;
     private static final MatrixElement ZERO = new UnmodifiableMatrixElement(0);
     private boolean symmetrized = false;
     private boolean transposed = false;

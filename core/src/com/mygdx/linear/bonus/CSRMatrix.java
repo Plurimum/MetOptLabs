@@ -1,20 +1,19 @@
 package com.mygdx.linear.bonus;
 
 import com.mygdx.linear.ArrayMatrix;
+import com.mygdx.linear.Matrix;
 import com.mygdx.nmethods.Vector;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.stream.IntStream;
-import com.mygdx.linear.Matrix;
 
 public class CSRMatrix extends com.mygdx.nmethods.Matrix {
-    List<Double> vals;
-    List<Integer> iCols;
-    List<Integer> iRows;
+    protected final List<Double> vals;
+    protected final List<Integer> iCols;
+    protected final List<Integer> iRows;
     final double EPS = 1e-8;
 
     public CSRMatrix(List<Double> vals, List<Integer> iCols, List<Integer> iRows) {
@@ -74,7 +73,6 @@ public class CSRMatrix extends com.mygdx.nmethods.Matrix {
                     sparsed.get(i, j).set(m.get(i, j).get()));
         });
         return sparsed;
-
     }
 
     @Override
