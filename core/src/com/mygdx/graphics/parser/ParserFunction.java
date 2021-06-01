@@ -1,11 +1,13 @@
 package com.mygdx.graphics.parser;
 
+import com.mygdx.nmethods.Matrix;
 import com.mygdx.nmethods.QuadraticFunction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ParserFunction extends QuadraticFunction {
@@ -30,12 +32,17 @@ public class ParserFunction extends QuadraticFunction {
 
     public ParserFunction multiply(final QuadraticFunction other) {
         final List<List<Double>> ra = new ArrayList<>();
-        ra.add(Arrays.asList(2 * getB().get(0) * other.getB().get(0), getB().get(0) * getB().get(1) + other.getB().get(1) * getB().get(0)));
-        ra.add(Arrays.asList(getB().get(0) * getB().get(1) + other.getB().get(1) * getB().get(0), 2 * getB().get(1) * other.getB().get(1)));
+        ra.add(Arrays.asList(2 * getB().get(0) * other.getB().get(0), other.getB().get(0) * getB().get(1) + other.getB().get(1) * getB().get(0)));
+        ra.add(Arrays.asList(other.getB().get(0) * getB().get(1) + other.getB().get(1) * getB().get(0), 2 * getB().get(1) * other.getB().get(1)));
         return new ParserFunction(ra, getB().multiply(other.getC()).add(other.getB().multiply(getC())), other.getC() * getC());
     }
 
     public ParserFunction negative() {
-        return this.multiply(new ParserFunction(getN(), -1));
+        return new ParserFunction(
+                this.getA().stream().map(list ->
+                        list.stream().map(val -> -val).collect(Collectors.toList())
+                ).collect(Collectors.toList()),
+                getB().stream().map(val -> -val).collect(Collectors.toList()),
+                -getC());
     }
 }
