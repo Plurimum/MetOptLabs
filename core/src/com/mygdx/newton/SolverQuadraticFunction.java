@@ -12,7 +12,7 @@ public class SolverQuadraticFunction extends QuadraticFunction {
     private final SystemSolveMatrix solver;
 
     public SolverQuadraticFunction(final SystemSolveMatrix a, final List<Double> b, final double c) {
-        super(new MatrixImplProxy(a), b, c);
+        super(new MatrixSpecific(a), b, c);
         this.solver = a;
     }
 
