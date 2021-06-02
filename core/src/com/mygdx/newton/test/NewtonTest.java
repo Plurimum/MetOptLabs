@@ -2,10 +2,11 @@ package com.mygdx.newton.test;
 
 import com.mygdx.graphics.parser.ExpressionParser;
 import com.mygdx.linear.ArrayMatrix;
+import com.mygdx.methods.BrentCombMethod;
 import com.mygdx.newton.ClassicNewtonMethod;
 import com.mygdx.newton.SolverQuadraticFunction;
+import com.mygdx.nmethods.GradientOpt;
 import com.mygdx.nmethods.NMethod;
-import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
 import com.mygdx.nmethods.QuadraticFunction;
 import com.mygdx.nmethods.Vector;
 import org.junit.Before;
@@ -19,7 +20,7 @@ public class NewtonTest {
 
     private final Random random = new Random();
     private final int size = 10;
-    private final double eps = 1e-4;
+    private final double eps = 1e-6;
 
     @Before
     void init() {
@@ -27,7 +28,7 @@ public class NewtonTest {
 
     @Test
     void classic() {
-        parseAndCheck("72*x*x -120*x*y + 72*y*y + 12*x -30*y + 25");
+        parseAndCheck("72*x*x - 120*x*y + 72*y*y + 12*x -30*y + 25");
         parseAndCheck("5*x*x + 10*y*y + 24*x + 2");
     }
 
@@ -41,9 +42,10 @@ public class NewtonTest {
 
     void parseAndCheck(final String s) {
         final QuadraticFunction f = new ExpressionParser().parse(s);
+        final Vector expected = new GradientOpt<>(f, BrentCombMethod::new).findMin(eps);
         final NMethod method = new ClassicNewtonMethod<>(new SolverQuadraticFunction(f));
         final Vector res = method.findMin(eps);
-        final Vector expected = new NonlinearConjugateGradientMethod<>(f).findMin(eps);
-        Assertions.assertEquals(0, res.add(expected.multiply(-1)).length(), 100 * eps);
+        System.out.println("!" + expected);
+        Assertions.assertEquals(0, res.add(expected.multiply(-1)).length(), 1e-3);
     }
 }

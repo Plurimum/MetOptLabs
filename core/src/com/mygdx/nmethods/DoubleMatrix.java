@@ -18,7 +18,7 @@ public interface DoubleMatrix extends List<Vector> {
         List<Double> result = new ArrayList<>(Collections.nCopies(size(), 0.));
         for (int i = 0; i < size(); i++) {
             for (int j = 0; j < size(); j++) {
-                result.set(j, result.get(j) + get(i, j) * other.get(j));
+                result.set(i, result.get(i) + get(i, j) * other.get(j));
             }
         }
         return new Vector(result);

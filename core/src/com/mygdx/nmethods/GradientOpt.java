@@ -2,13 +2,12 @@ package com.mygdx.nmethods;
 
 import com.mygdx.methods.Method;
 
-import java.util.Arrays;
 import java.util.function.Function;
 
 public class GradientOpt<F extends NFunction> extends AbstractNMethod<F> {
 
     private final Function<Function<Double, Double>, Method> methodCreator;
-    public GradientOpt(final F f, final Function<Function<Double, Double>, Method> methodCreator) {
+    public  GradientOpt(final F f, final Function<Function<Double, Double>, Method> methodCreator) {
         super(f);
         this.methodCreator = methodCreator;
     }
@@ -20,7 +19,7 @@ public class GradientOpt<F extends NFunction> extends AbstractNMethod<F> {
             return null;
         }
         Function<Double, Vector> func = t -> x.getValue().add(gradient.multiply(-t));
-        double alpha = methodCreator.apply(getFunction().compose(func)).findMin(0., (double) 1.0, eps);
+        double alpha = methodCreator.apply(getFunction().compose(func)).findMin(0., 1.0, eps);
         return new Value<>(func.apply(alpha), getFunction());
     }
 }
