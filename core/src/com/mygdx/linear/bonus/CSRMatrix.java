@@ -3,6 +3,7 @@ package com.mygdx.linear.bonus;
 import com.mygdx.linear.ArrayMatrix;
 import com.mygdx.linear.Matrix;
 import com.mygdx.nmethods.MatrixImpl;
+import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
 import com.mygdx.nmethods.Vector;
 
 import java.util.ArrayList;
@@ -119,6 +120,13 @@ public class CSRMatrix extends MatrixImpl {
         }
 
         return new CSRMatrix(tVals, tICols, tIRows);
+    }
+
+
+    public List<Double> solve(List<Double> free) {
+        CgmSoleFunction fun = new CgmSoleFunction(this, free);
+        NonlinearConjugateGradientMethod m = new NonlinearConjugateGradientMethod(fun);
+        return m.findMin(EPS);
     }
 
 
