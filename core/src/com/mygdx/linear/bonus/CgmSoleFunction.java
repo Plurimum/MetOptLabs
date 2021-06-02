@@ -10,6 +10,4 @@ public class CgmSoleFunction extends QuadraticFunction {
     public CgmSoleFunction(final MatrixImpl a, final List<Double> b) {
         super(a, b.stream().map(i -> -2 * i).collect(Collectors.toList()), 0);
     }
-
-
 }

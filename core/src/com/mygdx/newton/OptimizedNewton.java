@@ -1,5 +1,6 @@
 package com.mygdx.newton;
 
+import com.mygdx.methods.GoldenSectionMethod;
 import com.mygdx.methods.Method;
 import com.mygdx.nmethods.AbstractNMethod;
 import com.mygdx.nmethods.Value;
@@ -14,6 +15,11 @@ public class OptimizedNewton <F extends SolverQuadraticFunction> extends Abstrac
     public OptimizedNewton(final F function, final Function<Function<Double, Double>, Method> methodFactory) {
         super(function);
         this.methodFactory = methodFactory;
+    }
+
+    public OptimizedNewton(final F function, final Vector start) {
+        super(function, start);
+        this.methodFactory = GoldenSectionMethod::new;
     }
 
     @Override

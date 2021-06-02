@@ -12,6 +12,10 @@ public class ClassicNewtonMethod<F extends SolverQuadraticFunction> extends Abst
         super(f);
     }
 
+    public ClassicNewtonMethod(final F f, Vector start) {
+        super(f, start);
+    }
+
     @Override
     public Value<Vector, Double> nextIteration(final Value<Vector, Double> x, final double eps) {
         final Vector gradient = getFunction().gradient(x.getValue());

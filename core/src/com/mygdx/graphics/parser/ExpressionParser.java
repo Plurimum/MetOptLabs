@@ -149,7 +149,7 @@ public class ExpressionParser extends BaseParser {
             sb.append('-');
         }
         skipWhitespaces();
-        while (hasNext() && Character.isDigit(ch)) {
+        while (hasNext() && (Character.isDigit(ch) || ch == '.' || ch == ',')) {
             sb.append(ch);
             nextChar();
         }

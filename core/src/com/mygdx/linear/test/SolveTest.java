@@ -48,7 +48,7 @@ public class SolveTest {
         final ArrayMatrix temp = generateRandomMatrix(size);
         final List<Double> expected = Collections.nCopies(size, 666.);
 
-        List<Double> actual = temp.solve(generateFree(temp, expected));
+        final List<Double> actual = temp.solve(generateFree(temp, expected));
         IntStream.range(0, size).forEach(i -> {
             Assertions.assertEquals(expected.get(i), actual.get(i), eps);
         });
