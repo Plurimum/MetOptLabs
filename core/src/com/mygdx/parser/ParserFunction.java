@@ -1,4 +1,4 @@
-package com.mygdx.graphics.parser;
+package com.mygdx.parser;
 
 import com.mygdx.nmethods.QuadraticFunction;
 
@@ -19,7 +19,8 @@ public class ParserFunction extends QuadraticFunction {
     }
 
     public ParserFunction(int n, String var) {
-        super(Collections.nCopies(n, Collections.nCopies(n, 0.)), var.equals("x") ? Arrays.asList(1., 0.) : Arrays.asList(0., 1.), 0);
+        super(Collections.nCopies(n, Collections.nCopies(n, 0.)), var.equals("x") ? Arrays.asList(1., 0.) :
+                Arrays.asList(0., 1.), 0);
 
     }
 
@@ -31,9 +32,14 @@ public class ParserFunction extends QuadraticFunction {
 
     public ParserFunction multiply(final QuadraticFunction other) {
         final List<List<Double>> ra = new ArrayList<>();
-        ra.add(Arrays.asList(2 * getB().get(0) * other.getB().get(0), other.getB().get(0) * getB().get(1) + other.getB().get(1) * getB().get(0)));
-        ra.add(Arrays.asList(other.getB().get(0) * getB().get(1) + other.getB().get(1) * getB().get(0), 2 * getB().get(1) * other.getB().get(1)));
-        return new ParserFunction(ra, getB().multiply(other.getC()).add(other.getB().multiply(getC())), other.getC() * getC());
+        ra.add(Arrays.asList(2 * getB().get(0) * other.getB().get(0),
+                other.getB().get(0) * getB().get(1) + other.getB().get(1) * getB().get(0)));
+
+        ra.add(Arrays.asList(other.getB().get(0) * getB().get(1) + other.getB().get(1) * getB().get(0),
+                2 * getB().get(1) * other.getB().get(1)));
+
+        return new ParserFunction(ra, getB().multiply(other.getC()).add(other.getB().multiply(getC())),
+                other.getC() * getC());
     }
 
     public ParserFunction negative() {

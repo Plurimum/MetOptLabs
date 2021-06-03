@@ -125,7 +125,7 @@ public class CSRMatrix extends MatrixImpl {
 
     public List<Double> solve(List<Double> free) {
         CgmSoleFunction fun = new CgmSoleFunction(this, free);
-        NonlinearConjugateGradientMethod m = new NonlinearConjugateGradientMethod(fun);
+        NonlinearConjugateGradientMethod<CgmSoleFunction> m = new NonlinearConjugateGradientMethod<>(fun);
         return m.findMin(EPS);
     }
 

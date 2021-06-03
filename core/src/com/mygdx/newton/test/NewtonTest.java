@@ -1,15 +1,14 @@
 package com.mygdx.newton.test;
 
-import com.mygdx.graphics.parser.ExpressionParser;
+import com.mygdx.newton.BFShMethod;
+import com.mygdx.nmethods.*;
+import com.mygdx.parser.QuadraticAlgebra;
+import com.mygdx.parser.ExpressionParser;
 import com.mygdx.linear.ArrayMatrix;
 import com.mygdx.methods.GoldenSectionMethod;
 import com.mygdx.newton.ClassicNewtonMethod;
 import com.mygdx.newton.OptimizedNewton;
 import com.mygdx.newton.SolverQuadraticFunction;
-import com.mygdx.nmethods.NMethod;
-import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
-import com.mygdx.nmethods.QuadraticFunction;
-import com.mygdx.nmethods.Vector;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import static java.time.Duration.ofSeconds;
@@ -54,6 +52,11 @@ public class NewtonTest {
         functions.forEach(fun -> parseAndCheck(fun, f -> new OptimizedNewton<>(f, GoldenSectionMethod::new)));
     }
 
+    @Test
+    void bfsh() {
+        functions.forEach(fun -> parseAndCheck(fun, BFShMethod::new));
+    }
+
     ArrayMatrix generateRandomMatrix(final int n) {
         final ArrayMatrix result = new ArrayMatrix(n, n);
         IntStream.range(0, n).forEach(i -> {
@@ -63,7 +66,7 @@ public class NewtonTest {
     }
 
     void parseAndCheck(final String s, final Function<SolverQuadraticFunction, NMethod> newtonFactory) {
-        final QuadraticFunction f = new ExpressionParser().parse(s);
+        final QuadraticFunction f = new ExpressionParser<>(new QuadraticAlgebra()).parse(s);
         final Vector expected = new NonlinearConjugateGradientMethod<>(f).findMin(eps);
         final NMethod method = newtonFactory.apply(new SolverQuadraticFunction(f));
         final AtomicReference<Vector> res = new AtomicReference<>();

@@ -1,7 +1,7 @@
 package com.mygdx.nmethods;
 
-import com.mygdx.graphics.QuadraticAlgebra;
-import com.mygdx.graphics.parser.ExpressionParser;
+import com.mygdx.parser.QuadraticAlgebra;
+import com.mygdx.parser.ExpressionParser;
 import com.mygdx.methods.*;
 
 import java.util.*;

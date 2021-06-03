@@ -1,4 +1,4 @@
-package com.mygdx.graphics.parser;
+package com.mygdx.parser;
 
 public class StringSource implements Source {
     private final String data;

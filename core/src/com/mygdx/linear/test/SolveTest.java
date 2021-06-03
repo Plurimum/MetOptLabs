@@ -38,7 +38,7 @@ public class SolveTest {
         final int size = 10;
         final ArrayMatrix temp = generateRandomMatrix(size);
         final ProfileMatrix pm = new ProfileMatrix(temp);
-        final List<Double> expected = IntStream.range(0, size).asDoubleStream().boxed().collect(Collectors.toList());
+        final List<Double> expected = Collections.nCopies(size, 666.);//IntStream.range(0, size).asDoubleStream().boxed().collect(Collectors.toList());
         List<Double> actual = pm.solve(generateFree(temp, expected));
         IntStream.range(0, size).forEach(i -> {
             Assertions.assertEquals(expected.get(i), actual.get(i), eps);

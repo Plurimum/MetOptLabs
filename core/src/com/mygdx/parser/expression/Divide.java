@@ -1,4 +1,4 @@
-package com.mygdx.graphics.parser.expression;
+package com.mygdx.parser.expression;
 
 public class Divide extends AbstractBinaryExpression {
     public Divide(final Expression lhs, final Expression rhs) {
@@ -12,7 +12,7 @@ public class Divide extends AbstractBinaryExpression {
 
     @Override
     protected double apply(final double lhs, final double rhs) {
-        return lhs * rhs;
+        return lhs / rhs;
     }
 
     @Override

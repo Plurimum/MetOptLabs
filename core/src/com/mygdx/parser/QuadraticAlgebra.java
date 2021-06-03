@@ -1,7 +1,7 @@
-package com.mygdx.graphics;
+package com.mygdx.parser;
 
-import com.mygdx.graphics.parser.ParserAlgebra;
-import com.mygdx.graphics.parser.ParserFunction;
+import com.mygdx.parser.ParserAlgebra;
+import com.mygdx.parser.ParserFunction;
 
 public class QuadraticAlgebra implements ParserAlgebra<ParserFunction> {
     @Override

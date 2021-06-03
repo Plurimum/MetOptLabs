@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 public class Vector extends AbstractList<Double> {
     private final List<Double> coordinates;
@@ -28,6 +29,16 @@ public class Vector extends AbstractList<Double> {
         return this.stream()
                 .map(x -> x * scalar)
                 .collect(Collectors.toCollection(Vector::new));
+    }
+
+    public DoubleMatrix multiply(final Vector other) {
+        //TODO: check for transposed
+        if (other.size() != size()) {
+            throw new IllegalArgumentException("Other vector should have the same size");
+        }
+        return new MatrixImpl(this.stream().map(val -> IntStream.range(0, size())
+                .mapToObj(j -> val * other.get(j)).collect(Collectors.toList()))
+                .collect(Collectors.toList()));
     }
 
     public Vector add(List<Double> other) {

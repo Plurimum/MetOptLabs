@@ -1,6 +1,6 @@
-package com.mygdx.graphics.parser;
+package com.mygdx.parser;
 
-import com.mygdx.graphics.parser.expression.*;
+import com.mygdx.parser.expression.*;
 
 public class ExpressionAlgebra implements ParserAlgebra<Expression> {
     @Override

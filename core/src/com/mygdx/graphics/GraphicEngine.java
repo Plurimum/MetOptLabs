@@ -13,12 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mygdx.graphics.parser.ExpressionParser;
+import com.mygdx.parser.ExpressionParser;
 import com.mygdx.methods.BrentCombMethod;
 import com.mygdx.nmethods.AbstractNMethod;
 import com.mygdx.nmethods.GradientMethod;
 import com.mygdx.nmethods.GradientOpt;
 import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
+import com.mygdx.parser.QuadraticAlgebra;
 
 import java.util.function.Function;
 

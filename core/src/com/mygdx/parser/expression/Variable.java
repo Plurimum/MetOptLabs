@@ -1,4 +1,4 @@
-package com.mygdx.graphics.parser.expression;
+package com.mygdx.parser.expression;
 
 import java.util.Map;
 

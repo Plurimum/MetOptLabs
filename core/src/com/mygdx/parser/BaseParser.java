@@ -1,4 +1,4 @@
-package com.mygdx.graphics.parser;
+package com.mygdx.parser;
 
 public class BaseParser {
     final int BUFFER_SIZE = 5;
