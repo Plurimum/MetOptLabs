@@ -20,4 +20,5 @@ public class Negate extends AbstractUnaryOperation {
     public Expression derivative(final String variableName) {
         return new Negate(target.derivative(variableName));
     }
+
 }

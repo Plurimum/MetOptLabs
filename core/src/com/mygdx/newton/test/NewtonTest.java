@@ -3,9 +3,8 @@ package com.mygdx.newton.test;
 import com.mygdx.graphics.QuadraticAlgebra;
 import com.mygdx.graphics.parser.ExpressionParser;
 import com.mygdx.linear.ArrayMatrix;
-import com.mygdx.methods.GoldenSectionMethod;
-import com.mygdx.newton.OptimizedNewton;
-import com.mygdx.newton.SolverQuadraticFunction;
+import com.mygdx.newton.ClassicNewtonMethod;
+import com.mygdx.newton.NewtonFunction;
 import com.mygdx.nmethods.NMethod;
 import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
 import com.mygdx.nmethods.QuadraticFunction;
@@ -51,7 +50,7 @@ public class NewtonTest {
     void parseAndCheck(final String s) {
         final QuadraticFunction f = new ExpressionParser<>(new QuadraticAlgebra()).parse(s);
         final Vector expected = new NonlinearConjugateGradientMethod<>(f).findMin(eps);
-        final NMethod method = new OptimizedNewton<>(new SolverQuadraticFunction(f), GoldenSectionMethod::new);
+        final NMethod method = new ClassicNewtonMethod<>(new NewtonFunction(s));
         final AtomicReference<Vector> res = new AtomicReference<>();
         Assertions.assertTimeoutPreemptively(ofSeconds(5), () -> {
             res.set(method.findMin(eps));;
