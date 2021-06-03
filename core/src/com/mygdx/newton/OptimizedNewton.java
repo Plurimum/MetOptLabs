@@ -8,7 +8,7 @@ import com.mygdx.nmethods.Vector;
 
 import java.util.function.Function;
 
-public class OptimizedNewton <F extends SolverQuadraticFunction> extends AbstractNMethod<F> {
+public class OptimizedNewton <F extends NewtonFunction> extends AbstractNMethod<F> {
 
     protected final Function<Function<Double, Double>, Method> methodFactory;
 
@@ -25,7 +25,7 @@ public class OptimizedNewton <F extends SolverQuadraticFunction> extends Abstrac
     @Override
     public Value<Vector, Double> nextIteration(final Value<Vector, Double> x, final double eps) {
         final Vector gradient = getFunction().gradient(x.getValue());
-        final Vector p = new Vector(getFunction().getSolver().solve(gradient.multiply(-1)));
+        final Vector p = new Vector(getFunction().hesse(x.getValue()).solve(gradient.multiply(-1)));
         final Function<Double, Vector> func = t -> x.getValue().add(p.multiply(t));
         final double alpha = methodFactory.apply(getFunction().compose(func)).findMin(0.5, 1.5, eps);
         final Vector pa = p.multiply(alpha);

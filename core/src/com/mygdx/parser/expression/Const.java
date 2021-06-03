@@ -1,5 +1,7 @@
 package com.mygdx.parser.expression;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class Const implements Expression {
@@ -20,6 +22,11 @@ public class Const implements Expression {
     @Override
     public Expression derivative(final String variableName) {
         return ZERO;
+    }
+
+    @Override
+    public List<String> getVariables() {
+        return Collections.emptyList();
     }
 
     @Override

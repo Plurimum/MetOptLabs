@@ -1,5 +1,6 @@
 package com.mygdx.parser.expression;
 
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractUnaryOperation implements Expression {
@@ -18,6 +19,11 @@ public abstract class AbstractUnaryOperation implements Expression {
     protected abstract String getStringValue();
 
     protected abstract double apply(double targetValue);
+
+    @Override
+    public List<String> getVariables() {
+        return target.getVariables();
+    }
 
     @Override
     public String toString() {

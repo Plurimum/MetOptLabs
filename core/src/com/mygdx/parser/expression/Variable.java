@@ -1,5 +1,7 @@
 package com.mygdx.parser.expression;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class Variable implements Expression {
@@ -17,11 +19,18 @@ public class Variable implements Expression {
 
     @Override
     public Expression derivative(final String variableName) {
-        return Const.ONE;
+        return variableName.equals(name) ? Const.ONE : Const.ZERO;
+    }
+
+    @Override
+    public List<String> getVariables() {
+        return Collections.singletonList(name);
     }
 
     @Override
     public String toString() {
         return name;
     }
+
+
 }

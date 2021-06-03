@@ -1,6 +1,6 @@
 package com.mygdx.parser.expression;
 
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractBinaryExpression implements Expression {
 
@@ -19,6 +19,13 @@ public abstract class AbstractBinaryExpression implements Expression {
     @Override
     public Expression derivative(final String variableName) {
         return applyDerivative(lhs.derivative(variableName), rhs.derivative(variableName));
+    }
+
+    @Override
+    public List<String> getVariables() {
+        final Set<String> result = new HashSet<>(lhs.getVariables());
+        result.addAll(rhs.getVariables());
+        return new ArrayList<>(result);
     }
 
     protected abstract String stringValue();
