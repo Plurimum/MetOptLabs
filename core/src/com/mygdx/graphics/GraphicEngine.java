@@ -1,22 +1,26 @@
 package com.mygdx.graphics;
 
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.graphics.parser.ExpressionParser;
-import com.mygdx.methods.*;
-import com.mygdx.nmethods.*;
+import com.mygdx.methods.BrentCombMethod;
+import com.mygdx.nmethods.AbstractNMethod;
+import com.mygdx.nmethods.GradientMethod;
+import com.mygdx.nmethods.GradientOpt;
+import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class GraphicEngine extends ApplicationAdapter {
     private Batch batch;
@@ -69,7 +73,7 @@ public class GraphicEngine extends ApplicationAdapter {
         inputFunction = new Input.TextInputListener() {
             @Override
             public void input(String text) {
-                func = new RenderFunction(parser.parse(text));
+                func = null;//new RenderFunction(parser.parse(text));
                 inputEps("Input epsilon");
             }
 
@@ -96,7 +100,7 @@ public class GraphicEngine extends ApplicationAdapter {
 
     @Override
     public void create() {
-        parser = new ExpressionParser();
+        parser = new ExpressionParser<>(new QuadraticAlgebra());
         stage = new Stage();
         batch = stage.getBatch();
         initInputs();
