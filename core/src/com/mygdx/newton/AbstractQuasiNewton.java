@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public abstract class AbstractQuasiNewton<F extends SolverQuadraticFunction> extends AbstractNMethod<F> {
+public abstract class AbstractQuasiNewton<F extends NFunction> extends AbstractNMethod<F> {
 
     protected final Function<Function<Double, Double>, Method> methodFactory;
     protected DoubleMatrix g;
@@ -22,19 +22,6 @@ public abstract class AbstractQuasiNewton<F extends SolverQuadraticFunction> ext
     protected AbstractQuasiNewton(F function) {
         super(function);
         this.methodFactory = GoldenSectionMethod::new;
-        final int size = function.getN();
-        this.g = new MatrixImpl(IntStream.range(0, size)
-                .mapToObj(i -> IntStream.range(0, size)
-                        .mapToObj(j -> i == j ? 1. : 0.)
-                        .collect(Collectors.toList()))
-                .collect(Collectors.toList()));
-        final Vector x = new Vector(Collections.nCopies(size, 0.));
-        this.prevDeltaW = function.gradient(x).multiply(-1);
-        final Vector p = prevDeltaW;
-        final Function<Double, Vector> func = t -> x.add(p.multiply(t));
-        final double alpha = methodFactory.apply(getFunction().compose(func)).findMin(0.5, 1.5, 1e-7);
-        final Vector pa = p.multiply(alpha);
-        prevDeltaX = x.add(pa);
     }
 
     protected abstract DoubleMatrix nextG();
@@ -53,5 +40,23 @@ public abstract class AbstractQuasiNewton<F extends SolverQuadraticFunction> ext
             return null;
         }
         return new Value<>(x.getValue().add(pa), getFunction());
+    }
+
+    @Override
+    public Vector findMin(final double eps) {
+        final int size = getFunction().getN();
+        this.g = new MatrixImpl(IntStream.range(0, size)
+                .mapToObj(i -> IntStream.range(0, size)
+                        .mapToObj(j -> i == j ? 1. : 0.)
+                        .collect(Collectors.toList()))
+                .collect(Collectors.toList()));
+        final Vector x = new Vector(Collections.nCopies(size, 0.));
+        this.prevDeltaW = getFunction().gradient(x).multiply(-1);
+        final Vector p = prevDeltaW;
+        final Function<Double, Vector> func = t -> x.add(p.multiply(t));
+        final double alpha = methodFactory.apply(getFunction().compose(func)).findMin(0.5, 1.5, eps);
+        final Vector pa = p.multiply(alpha);
+        prevDeltaX = x.add(pa);
+        return super.findMin(eps);
     }
 }

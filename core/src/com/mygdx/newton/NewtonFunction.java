@@ -1,13 +1,13 @@
 package com.mygdx.newton;
 
-import com.mygdx.graphics.parser.ExpressionAlgebra;
-import com.mygdx.graphics.parser.ExpressionParser;
-import com.mygdx.graphics.parser.expression.Expression;
 import com.mygdx.linear.ArrayMatrix;
 import com.mygdx.linear.ProfileMatrix;
 import com.mygdx.linear.SystemSolveMatrix;
 import com.mygdx.nmethods.NFunction;
 import com.mygdx.nmethods.Vector;
+import com.mygdx.parser.ExpressionAlgebra;
+import com.mygdx.parser.ExpressionParser;
+import com.mygdx.parser.expression.Expression;
 
 import java.util.HashMap;
 import java.util.List;

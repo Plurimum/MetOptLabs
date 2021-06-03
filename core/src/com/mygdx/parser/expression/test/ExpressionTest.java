@@ -15,6 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ExpressionTest {
     final ExpressionParser<Expression> parser = new ExpressionParser<>(new ExpressionAlgebra());
     private static final double EPS = 1e-5;
+    private final Map<String, Double> variables = new HashMap<String, Double>(){{
+        put("x", 1.);
+        put("y", 2.);
+        put("z", 3.);
+    }};
 
     @Test
     void sumZeros() {
@@ -51,12 +56,17 @@ public class ExpressionTest {
     }
 
     @Test
+    void derivative() {
+        Map<String, Double> variable = Collections.singletonMap("x", 10.);
+        assertEquals(1., parser.parse("x").derivative("x").evaluate(variable), EPS);
+        assertEquals(20., parser.parse("x * x").derivative("x").evaluate(variable), EPS);
+        assertEquals(6., parser.parse("x * y * z").derivative("x").evaluate(variables), EPS);
+        assertEquals(24., parser.parse("2 * x * y * y * z").derivative("y").evaluate(variables), EPS);
+    }
+
+    @Test
     void opsPriorities() {
         final Map<String, Double> variable = Collections.singletonMap("x", 2.);
-        final Map<String, Double> variables = new HashMap<>();
-        variables.put("x", 1.);
-        variables.put("y", 2.);
-        variables.put("z", 3.);
         assertEquals(6., parser.parse("2 + 2 * 2").evaluate(variable), EPS);
         assertEquals(8., parser.parse("(2 + 2) * 2").evaluate(variable), EPS);
         assertEquals(-2., parser.parse("2 - 2 * 2").evaluate(variable), EPS);

@@ -1,26 +1,27 @@
 package com.mygdx.newton.test;
 
 import com.mygdx.newton.BFShMethod;
+import com.mygdx.newton.NewtonFunction;
 import com.mygdx.nmethods.*;
+import com.mygdx.nmethods.Vector;
 import com.mygdx.parser.QuadraticAlgebra;
 import com.mygdx.parser.ExpressionParser;
 import com.mygdx.linear.ArrayMatrix;
 import com.mygdx.methods.GoldenSectionMethod;
 import com.mygdx.newton.ClassicNewtonMethod;
 import com.mygdx.newton.OptimizedNewton;
-import com.mygdx.newton.SolverQuadraticFunction;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.time.Duration.ofSeconds;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class NewtonTest {
 
@@ -34,12 +35,27 @@ public class NewtonTest {
             "18*x*x - 33*x*y + 10*y*y + 2*x + 155*y + 3",
             "228*x*x - 144*x*y + 101*y*y -30*x + 1*y + 3"
     );
-    private final List<String> labFunctions = Arrays.asList(
-            "x*x - 1.2*x*y + y*y"
+    private final List<ResearchTriple> labFunctionsFirst = Arrays.asList(
+            new ResearchTriple(
+                    "100*(y - x * x)*(y - x * x) + (1 - x) * (1 - x)",
+                    new Vector(Arrays.asList(-1.2, 1.)),
+                    new Vector(Arrays.asList(1., 1.))),
+            new ResearchTriple(
+                    "x * x + y * y - 6 / 5 * x * y",
+                    new Vector(Arrays.asList(4., 1.)),
+                    new Vector(Arrays.asList(0., 0.)))
     );
 
-    @Before
-    void init() {
+    private static class ResearchTriple {
+        String func;
+        Vector start;
+        Vector ans;
+
+        ResearchTriple(String func, Vector start, Vector ans) {
+            this.func = func;
+            this.start = start;
+            this.ans = ans;
+        }
     }
 
     @Test
@@ -57,7 +73,32 @@ public class NewtonTest {
         functions.forEach(fun -> parseAndCheck(fun, BFShMethod::new));
     }
 
-    ArrayMatrix generateRandomMatrix(final int n) {
+    @Test
+    void labFunctionsFirst() {
+        labFunctionsFirst.forEach(this::checkLabFunc);
+    }
+
+    @Test
+    void megaFunction() {
+        ClassicNewtonMethod<NewtonFunction> classic = new ClassicNewtonMethod<>(
+                new NewtonFunction("100*(y - x * x)*(y - x * x) + (1 - x) * (1 - x)"),
+                new Vector(Arrays.asList(-1.2, 1.)));
+        System.out.println(classic.findMin(eps));
+    }
+
+    private void checkLabFunc(ResearchTriple triple) {
+        Function<NMethod, Double> f = method -> method.findMin(eps).add(triple.ans.multiply(-1)).length();
+        assertEquals(
+                0.,
+                f.apply(new ClassicNewtonMethod<>(new NewtonFunction(triple.func), triple.start)),
+                eps);
+        assertEquals(
+                0.,
+                f.apply(new OptimizedNewton<>(new NewtonFunction(triple.func), triple.start)),
+                eps);
+    }
+
+    private ArrayMatrix generateRandomMatrix(final int n) {
         final ArrayMatrix result = new ArrayMatrix(n, n);
         IntStream.range(0, n).forEach(i -> {
             IntStream.range(0, n).forEach(j -> result.get(i, j).set(random.nextInt(n) + 1));
@@ -65,15 +106,15 @@ public class NewtonTest {
         return result;
     }
 
-    void parseAndCheck(final String s, final Function<SolverQuadraticFunction, NMethod> newtonFactory) {
+    private void parseAndCheck(final String s, final Function<NewtonFunction, NMethod> newtonFactory) {
         final QuadraticFunction f = new ExpressionParser<>(new QuadraticAlgebra()).parse(s);
         final Vector expected = new NonlinearConjugateGradientMethod<>(f).findMin(eps);
-        final NMethod method = newtonFactory.apply(new SolverQuadraticFunction(f));
+        final NMethod method = newtonFactory.apply(new NewtonFunction(s));
         final AtomicReference<Vector> res = new AtomicReference<>();
-        Assertions.assertTimeoutPreemptively(ofSeconds(5), () -> {
+        assertTimeoutPreemptively(ofSeconds(5), () -> {
             res.set(method.findMin(eps));;
         });
         System.out.println("!" + expected);
-        Assertions.assertEquals(0, res.get().add(expected.multiply(-1)).length(), 2 * eps);
+        assertEquals(0, res.get().add(expected.multiply(-1)).length(), 2 * eps);
     }
 }

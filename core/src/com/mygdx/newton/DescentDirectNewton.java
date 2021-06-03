@@ -3,12 +3,13 @@ package com.mygdx.newton;
 import com.mygdx.methods.GoldenSectionMethod;
 import com.mygdx.methods.Method;
 import com.mygdx.nmethods.AbstractNMethod;
+import com.mygdx.nmethods.NFunction;
 import com.mygdx.nmethods.Value;
 import com.mygdx.nmethods.Vector;
 
 import java.util.function.Function;
 
-public class DescentDirectNewton <F extends SolverQuadraticFunction> extends OptimizedNewton<F> {
+public class DescentDirectNewton <F extends NewtonFunction> extends OptimizedNewton<F> {
 
     public DescentDirectNewton(F function, Function<Function<Double, Double>, Method> methodFactory) {
         super(function, methodFactory);
@@ -21,7 +22,7 @@ public class DescentDirectNewton <F extends SolverQuadraticFunction> extends Opt
     @Override
     public Value<Vector, Double> nextIteration(Value<Vector, Double> x, double eps) {
         final Vector gradient = getFunction().gradient(x.getValue());
-        Vector p = new Vector(getFunction().getSolver().solve(gradient.multiply(-1)));
+        Vector p = new Vector(getFunction().hesse(x.getValue()).solve(gradient.multiply(-1)));
         if (p.scalarProduct(gradient) > 0) {
             p = gradient.multiply(-1);
         }

@@ -1,9 +1,10 @@
 package com.mygdx.newton;
 
 import com.mygdx.nmethods.DoubleMatrix;
+import com.mygdx.nmethods.NFunction;
 import com.mygdx.nmethods.Vector;
 
-public class BFShMethod<F extends SolverQuadraticFunction> extends AbstractQuasiNewton<F>{
+public class BFShMethod<F extends NFunction> extends AbstractQuasiNewton<F>{
     public BFShMethod(F function) {
         super(function);
     }

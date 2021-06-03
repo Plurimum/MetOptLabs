@@ -23,7 +23,7 @@ public abstract class AbstractBinaryExpression implements Expression {
 
     @Override
     public List<String> getVariables() {
-        final Set<String> result = new HashSet<>(lhs.getVariables());
+        final Set<String> result = new TreeSet<>(lhs.getVariables());
         result.addAll(rhs.getVariables());
         return new ArrayList<>(result);
     }

@@ -3,7 +3,7 @@ package com.mygdx.newton;
 import com.mygdx.nmethods.DoubleMatrix;
 import com.mygdx.nmethods.Vector;
 
-public class PowellMethod<F extends SolverQuadraticFunction> extends AbstractQuasiNewton<F>{
+public class PowellMethod<F extends NewtonFunction> extends AbstractQuasiNewton<F>{
     public PowellMethod(F function) {
         super(function);
     }
