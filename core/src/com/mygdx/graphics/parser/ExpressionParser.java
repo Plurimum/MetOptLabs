@@ -1,24 +1,28 @@
 package com.mygdx.graphics.parser;
 
-import com.mygdx.nmethods.QuadraticFunction;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ExpressionParser extends BaseParser {
+public class ExpressionParser<T> extends BaseParser {
     private static final Map<String, Integer> PRIORITIES = new HashMap<String, Integer>() {{
         put("+", 1);
         put("-", 1);
         put("*", 2);
+        put("/", 2);
     }};
-    final int LAST_PRIORITY = 3;
-    final int START_PRIORITY = 1;
+    private final int LAST_PRIORITY = 3;
+    private final int START_PRIORITY = 1;
     private String last = "";
+    private final ParserAlgebra<T> algebra;
 
-    public QuadraticFunction parse(String expression) {
+    public ExpressionParser(final ParserAlgebra<T> algebra) {
+        this.algebra = algebra;
+    }
+
+    public T parse(final String expression) {
         setSource(new StringSource(expression));
-        QuadraticFunction res = parseOperation(START_PRIORITY);
+        final T res = parseOperation(START_PRIORITY);
         if (hasNext()) {
             throw new IllegalStateException(getPos() + ": " + ch);
         }
@@ -63,12 +67,12 @@ public class ExpressionParser extends BaseParser {
         }
     }
 
-    private ParserFunction parseOperation(int priority) {
+    private T parseOperation(int priority) {
         skipWhitespaces();
         if (priority == LAST_PRIORITY) {
             return parseUnary();
         }
-        ParserFunction result = parseOperation(priority + 1);
+        T result = parseOperation(priority + 1);
         skipWhitespaces();
         while (hasNext() || !last.isEmpty()) {
             String operator;
@@ -88,13 +92,16 @@ public class ExpressionParser extends BaseParser {
             }
             switch (operator) {
                 case "+":
-                    result = result.add(parseOperation(priority + 1));
+                    result = algebra.add(result, parseOperation(priority + 1));
                     break;
                 case "-":
-                    result = result.add(parseOperation(priority + 1).negative());
+                    result = algebra.subtract(result, parseOperation(priority + 1));
                     break;
                 case "*":
-                    result = result.multiply(parseOperation(priority + 1));
+                    result = algebra.multiply(result, parseOperation(priority + 1));
+                    break;
+                case "/":
+                    result = algebra.divide(result, parseOperation(priority + 1));
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + operator);
@@ -105,7 +112,7 @@ public class ExpressionParser extends BaseParser {
         return result;
     }
 
-    private ParserFunction parseUnary() {
+    private T parseUnary() {
         skipWhitespaces();
         String operator = testOperation();
         if (Objects.equals(operator, "-")) {
@@ -113,23 +120,23 @@ public class ExpressionParser extends BaseParser {
             if (Character.isDigit(ch)) {
                 return parseNumber(true);
             } else {
-                return parseOperation(LAST_PRIORITY).negative();
+                return algebra.negate(parseOperation(LAST_PRIORITY));
             }
         } else if (operator != null) {
             throw new IllegalStateException(getPos() + ": " + "expected number or expression");
         }
         skipWhitespaces();
         if (test('(')) {
-            ParserFunction result = parseOperation(START_PRIORITY);
+            T result = parseOperation(START_PRIORITY);
             expect(')');
             return result;
         }
         return parseSimpleElement();
     }
 
-    private ParserFunction parseSimpleElement() {
+    private T parseSimpleElement() {
         skipWhitespaces();
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         int count = 0;
         while (hasNext() && Character.isLetter(ch) || ch == '_' || count > 0 && Character.isDigit(ch)) {
             count++;
@@ -137,19 +144,19 @@ public class ExpressionParser extends BaseParser {
             nextChar();
         }
         if (count != 0) {
-            return new ParserFunction(2, sb.toString());
+            return algebra.of(sb.toString());
         } else {
             return parseNumber(false);
         }
     }
 
-    private ParserFunction parseNumber(boolean negative) {
+    private T parseNumber(final boolean negative) {
         StringBuilder sb = new StringBuilder();
         if (negative) {
             sb.append('-');
         }
         skipWhitespaces();
-        while (hasNext() && Character.isDigit(ch)) {
+        while (hasNext() && (Character.isDigit(ch) || ch == '.')) {
             sb.append(ch);
             nextChar();
         }
@@ -160,6 +167,6 @@ public class ExpressionParser extends BaseParser {
                 throw new IllegalStateException(getPos() + ": " + "expected number or expression");
             }
         }
-        return new ParserFunction(2, Double.parseDouble(sb.toString()));
+        return algebra.of(Double.parseDouble(sb.toString()));
     }
 }

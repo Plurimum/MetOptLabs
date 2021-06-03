@@ -1,5 +1,6 @@
 package com.mygdx.nmethods;
 
+import com.mygdx.graphics.QuadraticAlgebra;
 import com.mygdx.graphics.parser.ExpressionParser;
 import com.mygdx.methods.*;
 
@@ -8,7 +9,7 @@ import java.util.function.Function;
 
 public class Main {
     public static void main(String[] args) {
-        QuadraticFunction f = new ExpressionParser()
+        QuadraticFunction f = new ExpressionParser<>(new QuadraticAlgebra())
                 .parse("7*x*x - 15 *x*y + 50 *y*y - 3*x + 4*y + 11");
         final double eps = 1e-3;
         List<Double> squareCoeffs = new ArrayList<>();
