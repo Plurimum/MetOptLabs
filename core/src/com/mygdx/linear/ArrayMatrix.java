@@ -84,8 +84,8 @@ public class ArrayMatrix implements SystemSolveMatrix {
     public List<Double> solve(final List<Double> free) {
         List<Double> result = new ArrayList<>(free);
         for (int i = 0; i < nRows(); i++) {
-            int indMax = 0;
-            for (int r = 0; r < nRows(); r++) {
+            int indMax = i;
+            for (int r = i; r < nRows(); r++) {
                 if (Math.abs(get(indMax, i).get()) < Math.abs(get(r, i).get())) {
                     indMax = r;
                 }
