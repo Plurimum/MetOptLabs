@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import static java.time.Duration.ofSeconds;
@@ -27,6 +29,16 @@ public class NewtonTest {
     private final Random random = new Random();
     private final int size = 10;
     private final double eps = 1e-4;
+    private final List<String> functions = Arrays.asList(
+            "72*x*x - 120*x*y + 72*y*y + 12*x -30*y + 25",
+            "5*x*x + 10*y*y + 24*x + 2",
+            "x*x + 2*x*y + 2*y*y + 2*x + 4*y + 3",
+            "18*x*x - 33*x*y + 10*y*y + 2*x + 155*y + 3",
+            "228*x*x - 144*x*y + 101*y*y -30*x + 1*y + 3"
+    );
+    private final List<String> labFunctions = Arrays.asList(
+            "x*x - 1.2*x*y + y*y"
+    );
 
     @Before
     void init() {
@@ -34,12 +46,12 @@ public class NewtonTest {
 
     @Test
     void classic() {
-        /*parseAndCheck("72*x*x - 120*x*y + 72*y*y + 12*x -30*y + 25");
-        parseAndCheck("5*x*x + 10*y*y + 24*x + 2");
-        parseAndCheck("x*x + 2*x*y + 2*y*y + 2*x + 4*y + 3");
-        parseAndCheck("18*x*x - 33*x*y + 10*y*y + 2*x + 155*y + 3");
-        parseAndCheck("228*x*x - 144*x*y + 101*y*y -30*x + 1*y + 3");*/
-        //parseAndCheck("x*x - 1.2*x*y + y*y ");
+        functions.forEach(fun -> parseAndCheck(fun, ClassicNewtonMethod::new));
+    }
+
+    @Test
+    void optimized() {
+        functions.forEach(fun -> parseAndCheck(fun, f -> new OptimizedNewton<>(f, GoldenSectionMethod::new)));
     }
 
     ArrayMatrix generateRandomMatrix(final int n) {
@@ -50,10 +62,10 @@ public class NewtonTest {
         return result;
     }
 
-    void parseAndCheck(final String s) {
+    void parseAndCheck(final String s, final Function<SolverQuadraticFunction, NMethod> newtonFactory) {
         final QuadraticFunction f = new ExpressionParser().parse(s);
         final Vector expected = new NonlinearConjugateGradientMethod<>(f).findMin(eps);
-        final NMethod method = new ClassicNewtonMethod<>(new SolverQuadraticFunction(f), new Vector(Arrays.asList(4., 1.)));
+        final NMethod method = newtonFactory.apply(new SolverQuadraticFunction(f));
         final AtomicReference<Vector> res = new AtomicReference<>();
         Assertions.assertTimeoutPreemptively(ofSeconds(5), () -> {
             res.set(method.findMin(eps));;

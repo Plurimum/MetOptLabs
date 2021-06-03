@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 public class OptimizedNewton <F extends SolverQuadraticFunction> extends AbstractNMethod<F> {
 
-    private final Function<Function<Double, Double>, Method> methodFactory;
+    protected final Function<Function<Double, Double>, Method> methodFactory;
 
     public OptimizedNewton(final F function, final Function<Function<Double, Double>, Method> methodFactory) {
         super(function);
@@ -33,7 +33,5 @@ public class OptimizedNewton <F extends SolverQuadraticFunction> extends Abstrac
             return null;
         }
         return new Value<>(x.getValue().add(pa), getFunction());
-
-
     }
 }
