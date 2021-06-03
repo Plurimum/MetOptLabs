@@ -4,6 +4,7 @@ public class MatrixElementImpl implements MatrixElement {
 
     private double value;
 
+    private static int counter = 0;
     public MatrixElementImpl() {
         this.value = 0;
     }
@@ -12,8 +13,21 @@ public class MatrixElementImpl implements MatrixElement {
         this.value = value;
     }
 
+    public static void resetCounter() {
+        counter = 0;
+    }
+
+    public static void inc() {
+        counter++;
+    }
+
+    public static int getCounter() {
+        return counter;
+    }
+
     @Override
     public double get() {
+        inc();
         return value;
     }
 
