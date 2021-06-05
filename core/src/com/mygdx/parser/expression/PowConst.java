@@ -19,11 +19,16 @@ public class PowConst implements Expression {
 
     @Override
     public Expression derivative(final String variableName) {
-        return new Multiply(new Const(exp), new PowConst(expression.derivative(variableName), exp - 1));
+        return new Multiply(expression.derivative(variableName), new Multiply(new Const(exp), new PowConst(expression, exp - 1)));
     }
 
     @Override
     public List<String> getVariables() {
         return expression.getVariables();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%s) ^ %d", expression, exp);
     }
 }

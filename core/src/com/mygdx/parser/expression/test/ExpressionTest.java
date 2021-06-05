@@ -5,10 +5,7 @@ import com.mygdx.parser.ExpressionParser;
 import com.mygdx.parser.expression.*;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -65,6 +62,17 @@ public class ExpressionTest {
         assertEquals(6., parser.parse("x * y * z").derivative("x").evaluate(variables), EPS);
         assertEquals(24., parser.parse("2 * x * y * y * z").derivative("y").evaluate(variables), EPS);
         assertEquals(6. + 12., parser.parse("2*x^3 + 3*x*y^2\n\n     ").derivative("x").evaluate(variables), EPS);
+    }
+
+    @Test
+    void string() {
+        final List<Double> xs = Arrays.asList(1., 2., 3., 4., 5., 6.);
+        final Expression expr = parser.parse("72*x^2 - 120*x*y + 72*y^2 + 12*x -30*y + 25").derivative("x");
+        final Expression expr1 = parser.parse("72*x*x - 120*x*y + 72*y*y + 12*x -30*y + 25").derivative("x");
+        for (final double x : xs) {
+            Map<String, Double> map = new HashMap<String, Double>(){{put("x", x); put("y", 1000.);}};
+            assertEquals(expr.evaluate(map), expr1.evaluate(map), 1e-8);
+        }
     }
 
     @Test
