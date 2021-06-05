@@ -116,6 +116,6 @@ public class NewtonTest {
             res.set(method.findMin(eps));;
         });
         System.out.println("!" + expected + " " + res.get());
-        assertEquals(0, res.get().add(expected.multiply(-1)).length(), 2 * eps);
+        assertEquals(0, res.get().add(expected.multiply(-1)).length(), 10 * eps);
     }
 }

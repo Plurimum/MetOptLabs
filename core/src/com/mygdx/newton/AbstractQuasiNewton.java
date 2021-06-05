@@ -21,7 +21,7 @@ public abstract class AbstractQuasiNewton<F extends NFunction> extends AbstractF
 
     protected abstract DoubleMatrix nextG(final DoubleMatrix g, final Vector deltaX, final Vector deltaW);
 
-    protected Vector getNextX(final Vector x, final Vector p, final double eps) {
+    protected Vector nextX(final Vector x, final Vector p, final double eps) {
         final Function<Double, Vector> f = t -> x.add(p.multiply(t));
         final double alpha = methodFactory.apply(getFunction().compose(f)).findMin(0., 10., eps);
         return f.apply(alpha);
@@ -35,7 +35,7 @@ public abstract class AbstractQuasiNewton<F extends NFunction> extends AbstractF
             for (int i = 0; i < getFunction().getN(); i++) {
                 System.out.println(x.getValue());
                 final Vector p = g.multiply(x.getFValue()).multiply(-1);
-                final Value<Vector, Vector> next = new Value<>(getNextX(x.getValue(), p, eps), getFunction()::gradient);
+                final Value<Vector, Vector> next = new Value<>(nextX(x.getValue(), p, eps), getFunction()::gradient);
                 final Vector deltaX = next.getValue().add(x.getValue().multiply(-1));
                 if (deltaX.length() < eps) {
                     return next.getValue();
