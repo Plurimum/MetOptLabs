@@ -1,6 +1,7 @@
 package com.mygdx.newton.test;
 
 import com.mygdx.linear.ArrayMatrix;
+import com.mygdx.linear.Matrix;
 import com.mygdx.methods.GoldenSectionMethod;
 import com.mygdx.newton.*;
 import com.mygdx.nmethods.GradientMethod;
@@ -22,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 public class NewtonTest {
 
     private final Random random = new Random();
-    private final int size = 10;
+    private final int size = 3;
     private final double eps = 1e-6;
     private final List<String> functions = Arrays.asList(
             "72*x*x - 120*x*y + 72*y*y + 12*x -30*y + 25",
@@ -84,6 +85,22 @@ public class NewtonTest {
                 new NewtonFunction("100*(y - x * x)*(y - x * x) + (1 - x) * (1 - x)"),
                 new Vector(Arrays.asList(-1.2, 1.)));
         System.out.println(classic.findMin(eps));
+    }
+
+    @Test
+    void cholesky() {
+        final Matrix a = new ArrayMatrix(Arrays.asList(
+                new Vector(Arrays.asList(4., 12., -16.)),
+                new Vector(Arrays.asList(12., 37., -43.)),
+                new Vector(Arrays.asList(-16., -43., 98.))));
+        final CholeskyDecomposition dec = new CholeskyDecomposition(a);
+        final Matrix b = dec.getL().multiply(dec.getTransposedL());
+        for (int i = 0; i < a.nRows(); i++) {
+            for (int j = 0; j < a.nColumns(); j++) {
+                assertEquals(a.get(i, j).get(), b.get(i, j).get(), eps);
+            }
+        }
+
     }
 
     private void checkLabFunc(ResearchTriple triple) {

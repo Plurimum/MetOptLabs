@@ -16,4 +16,5 @@ public interface SystemSolveMatrix extends Matrix {
         }
         return result;
     }
+
 }

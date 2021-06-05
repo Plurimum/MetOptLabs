@@ -33,7 +33,6 @@ public abstract class AbstractQuasiNewton<F extends NFunction> extends AbstractF
         while (true) {
             DoubleMatrix g = new DiagonalMatrixImpl(Collections.nCopies(getFunction().getN(), 1.));
             for (int i = 0; i < getFunction().getN(); i++) {
-                System.out.println(x.getValue());
                 final Vector p = g.multiply(x.getFValue()).multiply(-1);
                 final Value<Vector, Vector> next = new Value<>(nextX(x.getValue(), p, eps), getFunction()::gradient);
                 final Vector deltaX = next.getValue().add(x.getValue().multiply(-1));
