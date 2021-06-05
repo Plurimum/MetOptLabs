@@ -5,19 +5,21 @@ import com.mygdx.nmethods.NFunction;
 import com.mygdx.nmethods.Vector;
 
 public class BFShMethod<F extends NFunction> extends AbstractQuasiNewton<F>{
+
     public BFShMethod(F function) {
         super(function);
     }
 
     @Override
-    protected DoubleMatrix nextG() {
-        final double scalarRo = g.multiply(prevDeltaW).scalarProduct(prevDeltaW);
-        final Vector vectorR = g.multiply(prevDeltaW).multiply(1 / scalarRo)
-                .add(prevDeltaX.multiply(-1 / prevDeltaX.scalarProduct(prevDeltaW)));
-        final DoubleMatrix firstSummand = prevDeltaX.multiply(new Vector(prevDeltaX))
-                .multiply(1 / prevDeltaW.scalarProduct(prevDeltaX));
-        final DoubleMatrix secondSummand = g.multiply(prevDeltaW)
-                .multiply(prevDeltaW)
+    protected DoubleMatrix nextG(final DoubleMatrix g, final Vector deltaX, final Vector deltaW) {
+        final double scalarRo = g.multiply(deltaW).scalarProduct(deltaW);
+
+        final Vector vectorR = g.multiply(deltaW).multiply(1 / scalarRo)
+                .add(deltaX.multiply(-1 / deltaX.scalarProduct(deltaW)));
+        final DoubleMatrix firstSummand = deltaX.multiply(deltaX)
+                .multiply(1 / deltaW.scalarProduct(deltaX));
+        final DoubleMatrix secondSummand = g.multiply(deltaW)
+                .multiply(deltaW)
                 .multiply(g.transposed())
                 .multiply(1 / scalarRo);
         final DoubleMatrix thirdSummand = vectorR.multiply(scalarRo).multiply(vectorR);

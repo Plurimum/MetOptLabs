@@ -1,38 +1,33 @@
 package com.mygdx.newton.test;
 
-import com.mygdx.newton.BFShMethod;
-import com.mygdx.newton.NewtonFunction;
-import com.mygdx.nmethods.*;
-import com.mygdx.nmethods.Vector;
-import com.mygdx.parser.QuadraticAlgebra;
-import com.mygdx.parser.ExpressionParser;
 import com.mygdx.linear.ArrayMatrix;
 import com.mygdx.methods.GoldenSectionMethod;
-import com.mygdx.newton.ClassicNewtonMethod;
-import com.mygdx.newton.OptimizedNewton;
-import org.junit.Before;
-import org.junit.jupiter.api.Assertions;
+import com.mygdx.newton.*;
+import com.mygdx.nmethods.GradientMethod;
+import com.mygdx.nmethods.NMethod;
+import com.mygdx.nmethods.Vector;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static java.time.Duration.ofSeconds;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 public class NewtonTest {
 
     private final Random random = new Random();
     private final int size = 10;
-    private final double eps = 1e-4;
+    private final double eps = 1e-6;
     private final List<String> functions = Arrays.asList(
             "72*x*x - 120*x*y + 72*y*y + 12*x -30*y + 25",
             "5*x*x + 10*y*y + 24*x + 2",
             "x*x + 2*x*y + 2*y*y + 2*x + 4*y + 3",
-            "18*x*x - 33*x*y + 10*y*y + 2*x + 155*y + 3",
             "228*x*x - 144*x*y + 101*y*y -30*x + 1*y + 3"
     );
     private final List<ResearchTriple> labFunctionsFirst = Arrays.asList(
@@ -74,6 +69,11 @@ public class NewtonTest {
     }
 
     @Test
+    void powell() {
+        functions.forEach(fun -> parseAndCheck(fun, PowellMethod::new));
+    }
+
+    @Test
     void labFunctionsFirst() {
         labFunctionsFirst.forEach(this::checkLabFunc);
     }
@@ -107,14 +107,15 @@ public class NewtonTest {
     }
 
     private void parseAndCheck(final String s, final Function<NewtonFunction, NMethod> newtonFactory) {
-        final QuadraticFunction f = new ExpressionParser<>(new QuadraticAlgebra()).parse(s);
-        final Vector expected = new NonlinearConjugateGradientMethod<>(f).findMin(eps);
-        final NMethod method = newtonFactory.apply(new NewtonFunction(s));
+        System.out.println("TESTING " + s);
+        final NewtonFunction f = new NewtonFunction(s);
+        final NMethod method = newtonFactory.apply(f);
+        final Vector expected = new GradientMethod<>(f).findMin(eps);
         final AtomicReference<Vector> res = new AtomicReference<>();
         assertTimeoutPreemptively(ofSeconds(5), () -> {
             res.set(method.findMin(eps));;
         });
-        System.out.println("!" + expected);
+        System.out.println("!" + expected + " " + res.get());
         assertEquals(0, res.get().add(expected.multiply(-1)).length(), 2 * eps);
     }
 }

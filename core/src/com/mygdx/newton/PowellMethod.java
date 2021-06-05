@@ -9,11 +9,11 @@ public class PowellMethod<F extends NewtonFunction> extends AbstractQuasiNewton<
     }
 
     @Override
-    protected DoubleMatrix nextG() {
-        final Vector wavyDeltaX = prevDeltaX.add(g.multiply(prevDeltaW));
+    protected DoubleMatrix nextG(final DoubleMatrix g, final Vector deltaX, final Vector deltaW) {
+        final Vector wavyDeltaX = deltaX.add(g.multiply(deltaW));
         final DoubleMatrix summand = wavyDeltaX.multiply(
                 new Vector(wavyDeltaX))
-                .multiply(1 / wavyDeltaX.scalarProduct(prevDeltaW));
+                .multiply(1 / wavyDeltaX.scalarProduct(deltaW));
         return g.add(summand.multiply(-1));
     }
 }

@@ -20,10 +20,7 @@ public class ClassicNewtonMethod<F extends NewtonFunction> extends AbstractNMeth
     public Value<Vector, Double> nextIteration(final Value<Vector, Double> x, final double eps) {
         final Vector gradient = getFunction().gradient(x.getValue());
         final List<Double> p = getFunction().hesse(x.getValue()).solve(gradient.multiply(-1));
-        if (new Vector(p).length() < eps) {
-            return null;
-        }
-        return new Value<>(x.getValue().add(p), getFunction());
+        return new Vector(p).length() < eps ? null : new Value<>(x.getValue().add(p), getFunction());
     }
 
 }
