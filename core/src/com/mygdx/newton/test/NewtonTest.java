@@ -26,8 +26,8 @@ public class NewtonTest {
     private final int size = 10;
     private final double eps = 1e-6;
     private final List<String> functions = Arrays.asList(
-            "72*x*x - 120*x*y + 72*y*y + 12*x -30*y + 25",
-            "5*x*x + 10*y*y + 24*x + 2",
+            "72*x^2 - 120*x*y + 72*y^2 + 12*x -30*y + 25",
+            "5*x^2 + 10*y*y + 24*x + 2",
             "x*x + 2*x*y + 2*y*y + 2*x + 4*y + 3",
             "228*x*x - 144*x*y + 101*y*y -30*x + 1*y + 3"
     );
@@ -126,14 +126,6 @@ public class NewtonTest {
     @Test
     void labFunctionsSecond() {
         labFunctionsSecond.forEach(this::checkLabFuncSecond);
-    }
-
-    @Test
-    void megaFunction() {
-        ClassicNewtonMethod<NewtonFunction> classic = new ClassicNewtonMethod<>(
-                new NewtonFunction("100*(y - x * x)*(y - x * x) + (1 - x) * (1 - x)"),
-                new Vector(Arrays.asList(-1.2, 1.)));
-        System.out.println(classic.findMin(eps));
     }
 
     private void checkLabFuncFirst(ResearchTriple triple) {

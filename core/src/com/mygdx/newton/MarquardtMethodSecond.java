@@ -22,7 +22,6 @@ public class MarquardtMethodSecond<F extends NewtonFunction> extends AbstractNMe
         Vector gradient = getFunction().gradient(x.getValue());
         SystemSolveMatrix hesse = getFunction().hesse(x.getValue());
         double tau = findTau(hesse);
-        System.out.println(tau);
         IntStream.range(0, hesse.nColumns()).forEach(i -> hesse.get(i, i).set(hesse.get(i, i).get() + tau));
         Vector p = new Vector(hesse.solve(gradient.multiply(-1)));
         if (p.length() < eps) {
