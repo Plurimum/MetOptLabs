@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Align;
-import com.mygdx.nmethods.QuadraticFunction;
 import com.mygdx.nmethods.Value;
 import com.mygdx.nmethods.Vector;
 
@@ -141,7 +140,7 @@ public class Graphic extends Actor implements InputProcessor {
         }
         return new DoublePair((-b + Math.sqrt(d)) / (2 * a), (-b - Math.sqrt(d)) / (2 * a));
     }
-
+/*
     private void drawLevel(final double level, final QuadraticFunction f, final float width) {
         final double STEP = 3 / scale;
         if (!draw_levels) {
@@ -172,9 +171,8 @@ public class Graphic extends Actor implements InputProcessor {
             t1 = solve.getKey();
             t2 = solve.getValue();
         }
-
-
     }
+ */
 
     private void listPoint(int index, Color color) {
         renderer.setColor(color);
@@ -198,7 +196,7 @@ public class Graphic extends Actor implements InputProcessor {
                 Value<Vector, Double> t = main.renderPoints.get(i);
                 Value<Vector, Double> prev = main.renderPoints.get(i - 1);
                 renderer.setColor(Color.BLACK);
-                drawLevel(t.getFValue(), main, 1);
+                // drawLevel(t.getFValue(), main, 1);
                 renderer.setColor(Color.ORANGE);
                 drawPoint(t.getValue().get(0), t.getValue().get(1), 3);
                 renderer.setColor(Color.BLUE);

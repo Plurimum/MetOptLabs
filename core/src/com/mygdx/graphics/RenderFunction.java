@@ -1,21 +1,18 @@
 package com.mygdx.graphics;
 
-import com.mygdx.nmethods.QuadraticFunction;
+import com.mygdx.newton.NewtonFunction;
 import com.mygdx.nmethods.Value;
 import com.mygdx.nmethods.Vector;
+import com.mygdx.parser.expression.Expression;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RenderFunction extends QuadraticFunction {
+public class RenderFunction extends NewtonFunction {
     public final List<Value<Vector, Double>> renderPoints = new ArrayList<>();
 
-    public RenderFunction(QuadraticFunction other) {
-        super(other.getA(), other.getB(), other.getC());
-    }
-
-    public RenderFunction(final List<List<Double>> a, final List<Double> b, final double c) {
-        super(a, b, c);
+    public RenderFunction(final Expression expression) {
+        super(expression);
     }
 
     @Override

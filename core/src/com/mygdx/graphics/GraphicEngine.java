@@ -13,13 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mygdx.parser.ExpressionParser;
 import com.mygdx.methods.BrentCombMethod;
 import com.mygdx.nmethods.AbstractNMethod;
 import com.mygdx.nmethods.GradientMethod;
 import com.mygdx.nmethods.GradientOpt;
-import com.mygdx.nmethods.NonlinearConjugateGradientMethod;
-import com.mygdx.parser.QuadraticAlgebra;
+import com.mygdx.parser.ExpressionAlgebra;
+import com.mygdx.parser.ExpressionParser;
+import com.mygdx.parser.expression.Expression;
 
 import java.util.function.Function;
 
@@ -31,7 +31,7 @@ public class GraphicEngine extends ApplicationAdapter {
     private RenderFunction func;
     private Input.TextInputListener inputFunction;
     private Input.TextInputListener inputEps;
-    private ExpressionParser parser;
+    private ExpressionParser<Expression> parser;
     private double eps;
 
 
@@ -73,8 +73,8 @@ public class GraphicEngine extends ApplicationAdapter {
     private void initInputs() {
         inputFunction = new Input.TextInputListener() {
             @Override
-            public void input(String text) {
-                func = null;//new RenderFunction(parser.parse(text));
+            public void input(final String text) {
+                func = new RenderFunction(parser.parse(text));
                 inputEps("Input epsilon");
             }
 
@@ -101,7 +101,7 @@ public class GraphicEngine extends ApplicationAdapter {
 
     @Override
     public void create() {
-        parser = new ExpressionParser<>(new QuadraticAlgebra());
+        parser = new ExpressionParser<>(new ExpressionAlgebra());
         stage = new Stage();
         batch = stage.getBatch();
         initInputs();
@@ -115,7 +115,7 @@ public class GraphicEngine extends ApplicationAdapter {
         Gdx.input.setInputProcessor(inputMultiplexer);
         addButtonMethod("gradient-method", 1100, 800, GradientMethod::new);
         addButtonMethod("optimized-gradient", 1100, 650, func -> new GradientOpt<>(func, BrentCombMethod::new));
-        addButtonMethod("conjugate-gradient", 1100, 500, NonlinearConjugateGradientMethod::new);
+        // addButtonMethod("conjugate-gradient", 1100, 500, NonlinearConjugateGradientMethod::new);
         addButton("change-function", 1100, 350, () -> inputFunction("Input function"));
         addButton("level-lines-toggle", 1500, 350, () -> graphic.draw_levels = !graphic.draw_levels);
     }
