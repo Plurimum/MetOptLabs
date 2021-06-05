@@ -20,6 +20,7 @@ public class NewtonFunction implements NFunction {
     private final List<List<Expression>> hesse;
     private final Expression expression;
     private final List<String> variables;
+    private int iterations = 0;
 
     public NewtonFunction(final Expression expression) {
         this.expression = expression;
@@ -49,6 +50,7 @@ public class NewtonFunction implements NFunction {
     @Override
     public Vector gradient(final Vector point) {
         final Map<String, Double> args = getArguments(point);
+        iterations++;
         return gradient.stream().map(f -> f.evaluate(args)).collect(Collectors.toCollection(Vector::new));
     }
 
@@ -62,5 +64,9 @@ public class NewtonFunction implements NFunction {
     @Override
     public int getN() {
         return variables.size();
+    }
+
+    public int getIterations() {
+        return iterations;
     }
 }

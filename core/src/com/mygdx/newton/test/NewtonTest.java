@@ -40,6 +40,17 @@ public class NewtonTest {
                     new Vector(Arrays.asList(4., 1.)),
                     new Vector(Arrays.asList(0., 0.)))
     );
+    private final List<ResearchTriple> labFunctionsSecond = Arrays.asList(
+            new ResearchTriple(
+                    "100*(y - x)*(y - x) + (1 - x)*(1 - x)",
+                    baseStartPoint(),
+                    new Vector(Arrays.asList(1., 1.))),
+            new ResearchTriple(
+                    "(x * x + y - 11) * (x * x + y - 11) + (x + y * y - 7) * (x + y * y - 7)",
+                    baseStartPoint(),
+                    new Vector(Arrays.asList(3., 2.))
+            )
+    );
 
     private static class ResearchTriple {
         String func;
@@ -74,8 +85,18 @@ public class NewtonTest {
     }
 
     @Test
+    void marquardtFirst() {
+        functions.forEach(fun -> parseAndCheck(fun, MarquardtMethodFirst::new));
+    }
+
+    @Test
     void labFunctionsFirst() {
-        labFunctionsFirst.forEach(this::checkLabFunc);
+        labFunctionsFirst.forEach(this::checkLabFuncFirst);
+    }
+
+    @Test
+    void labFunctionsSecond() {
+        labFunctionsSecond.forEach(this::checkLabFuncSecond);
     }
 
     @Test
@@ -83,10 +104,12 @@ public class NewtonTest {
         ClassicNewtonMethod<NewtonFunction> classic = new ClassicNewtonMethod<>(
                 new NewtonFunction("100*(y - x * x)*(y - x * x) + (1 - x) * (1 - x)"),
                 new Vector(Arrays.asList(-1.2, 1.)));
-        System.out.println(classic.findMin(eps));
+        System.out.println("TESTING mega function");
+        assertEquals(0, classic.findMin(eps).add(new Vector(Arrays.asList(1., 1.)).multiply(-1)).length(), eps);
+        System.out.println("Iterations: " + classic.getFunction().getIterations());
     }
 
-    private void checkLabFunc(ResearchTriple triple) {
+    private void checkLabFuncFirst(ResearchTriple triple) {
         Function<NMethod, Double> f = method -> method.findMin(eps).add(triple.ans.multiply(-1)).length();
         assertEquals(
                 0.,
@@ -95,6 +118,18 @@ public class NewtonTest {
         assertEquals(
                 0.,
                 f.apply(new OptimizedNewton<>(new NewtonFunction(triple.func), triple.start)),
+                eps);
+    }
+
+    private void checkLabFuncSecond(ResearchTriple triple) {
+        Function<NMethod, Double> f = method -> method.findMin(eps).add(triple.ans.multiply(-1)).length();
+        assertEquals(
+                0.,
+                f.apply(new BFShMethod<>(new NewtonFunction(triple.func))),
+                eps);
+        assertEquals(
+                0.,
+                f.apply(new PowellMethod<>(new NewtonFunction(triple.func))),
                 eps);
     }
 
@@ -115,7 +150,11 @@ public class NewtonTest {
         assertTimeoutPreemptively(ofSeconds(5), () -> {
             res.set(method.findMin(eps));;
         });
-        System.out.println("!" + expected + " " + res.get());
+        System.out.println("Iterations: " + f.getIterations());
         assertEquals(0, res.get().add(expected.multiply(-1)).length(), 10 * eps);
+    }
+
+    private static Vector baseStartPoint() {
+        return new Vector(Arrays.asList(0., 0.));
     }
 }
