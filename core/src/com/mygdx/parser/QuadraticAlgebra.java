@@ -1,8 +1,5 @@
 package com.mygdx.parser;
 
-import com.mygdx.parser.ParserAlgebra;
-import com.mygdx.parser.ParserFunction;
-
 public class QuadraticAlgebra implements ParserAlgebra<ParserFunction> {
     @Override
     public ParserFunction multiply(final ParserFunction a, final ParserFunction b) {
@@ -27,6 +24,11 @@ public class QuadraticAlgebra implements ParserAlgebra<ParserFunction> {
     @Override
     public ParserFunction subtract(final ParserFunction a, final ParserFunction b) {
         return a.add(b.negative());
+    }
+
+    @Override
+    public ParserFunction powConst(final ParserFunction a, final ParserFunction b) {
+        throw new UnsupportedOperationException("powConst");
     }
 
     @Override

@@ -33,4 +33,8 @@ public class Const implements Expression {
     public String toString() {
         return String.valueOf(value);
     }
+
+    public double getValue() {
+        return value;
+    }
 }

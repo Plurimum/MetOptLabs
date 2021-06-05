@@ -29,6 +29,11 @@ public class ExpressionAlgebra implements ParserAlgebra<Expression> {
     }
 
     @Override
+    public Expression powConst(final Expression a, final Expression b) {
+        return new PowConst(a, (int) ((Const) b).getValue());
+    }
+
+    @Override
     public Expression of(final double c) {
         return new Const(c);
     }

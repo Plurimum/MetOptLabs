@@ -10,8 +10,9 @@ public class ExpressionParser<T> extends BaseParser {
         put("-", 1);
         put("*", 2);
         put("/", 2);
+        put("^", 3);
     }};
-    private final int LAST_PRIORITY = 3;
+    private final int LAST_PRIORITY = 4;
     private final int START_PRIORITY = 1;
     private String last = "";
     private final ParserAlgebra<T> algebra;
@@ -102,6 +103,9 @@ public class ExpressionParser<T> extends BaseParser {
                     break;
                 case "/":
                     result = algebra.divide(result, parseOperation(priority + 1));
+                    break;
+                case "^":
+                    result = algebra.powConst(result, parseOperation(priority + 1));
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + operator);
