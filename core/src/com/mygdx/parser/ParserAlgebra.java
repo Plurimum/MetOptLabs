@@ -12,6 +12,8 @@ public interface ParserAlgebra<T> {
 
     T subtract(T a, T b);
 
+    T powConst(T a, T b);
+
     T of(double c);
 
     T of(String variableName);

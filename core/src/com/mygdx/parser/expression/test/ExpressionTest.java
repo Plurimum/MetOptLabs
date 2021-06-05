@@ -51,8 +51,10 @@ public class ExpressionTest {
         assertEquals(-10., parser.parse("-x").evaluate(variable), EPS);
         assertEquals(5., parser.parse("5").evaluate(variable), EPS);
         assertEquals(10., parser.parse("x").evaluate(variable), EPS);
+        assertEquals(100., parser.parse("x^2").evaluate(variable), EPS);
+        assertEquals(1000., parser.parse("x^3").evaluate(variable), EPS);
         assertEquals(20.,
-                parser.parse("      ((         ((((10 +     x  ))))       )) ").evaluate(variable), EPS);
+                parser.parse("      ((       \n\n\n\n\n\n  ((((10 +     x  ))))       )) ").evaluate(variable), EPS);
     }
 
     @Test
@@ -62,6 +64,7 @@ public class ExpressionTest {
         assertEquals(20., parser.parse("x * x").derivative("x").evaluate(variable), EPS);
         assertEquals(6., parser.parse("x * y * z").derivative("x").evaluate(variables), EPS);
         assertEquals(24., parser.parse("2 * x * y * y * z").derivative("y").evaluate(variables), EPS);
+        assertEquals(6. + 12., parser.parse("2*x^3 + 3*x*y^2\n\n     ").derivative("x").evaluate(variables), EPS);
     }
 
     @Test
@@ -77,6 +80,11 @@ public class ExpressionTest {
         assertEquals(2., parser.parse("(x + 2) * x / (x + x - (x - 2))").evaluate(variable), EPS);
         assertEquals(4., parser.parse("((2 + 2)) - 0 / (--2) * 555").evaluate(variable), EPS);
         assertEquals(6., parser.parse("x--y--z").evaluate(variables), EPS);
+
+        assertEquals(6., parser.parse("2 + 2 ^ 2").evaluate(variable), EPS);
+        assertEquals(16., parser.parse("(2 ^ 2) ^ 2").evaluate(variable), EPS);
+        assertEquals(8., parser.parse("2 ^ 2 + 2 ^ 2").evaluate(variable), EPS);
+        assertEquals(16., parser.parse("2 ^ 2 * 2 ^ 2").evaluate(variable), EPS);
     }
 
     @Test
@@ -105,6 +113,23 @@ public class ExpressionTest {
         final Random random = new Random();
         variables.put("x", random.nextDouble());
         variables.put("y", random.nextDouble());
+        assertEquals(explicitExpr.evaluate(variables), parsedExpr.evaluate(variables), EPS);
+    }
+
+    @Test
+    void powConst() {
+        final Expression explicitExpr = new PowConst(
+                new Multiply(
+                        new Add(new Const(2), new Variable("z2")),
+                        new Variable("x1")
+                ),
+                3);
+
+        final Expression parsedExpr = parser.parse("((2 + z2)*x1)^3 ");
+        final Map<String, Double> variables = new HashMap<>();
+        final Random random = new Random();
+        variables.put("x1", random.nextDouble());
+        variables.put("z2", random.nextDouble());
         assertEquals(explicitExpr.evaluate(variables), parsedExpr.evaluate(variables), EPS);
     }
 }
