@@ -20,15 +20,37 @@ public interface Matrix {
         return result;
     }
 
-    default Matrix subtract(final Matrix other) {
+    default Matrix add(final Matrix other) {
         final ArrayMatrix result = new ArrayMatrix(nRows(), nColumns());
         for (int i = 0; i < nRows(); i++) {
             for (int j = 0; j < other.nColumns(); j++) {
-                result.get(i, j).set(get(i, j).get() - other.get(i, j).get());
+                result.get(i, j).set(get(i, j).get() + other.get(i, j).get());
             }
         }
         return result;
     }
 
+    default Matrix multiply(final double scalar) {
+        final ArrayMatrix result = new ArrayMatrix(nRows(), nColumns());
+        for (int i = 0; i < nRows(); i++) {
+            for (int j = 0; j < nColumns(); j++) {
+                result.get(i, j).set(get(i, j).get() * scalar);
+            }
+        }
+        return result;
+    }
 
+    default boolean equals(final Matrix other, final double eps) {
+        if (nRows() != other.nRows() || nColumns() != other.nColumns()) {
+            return false;
+        }
+        for (int i = 0; i < nRows(); i++) {
+            for (int j = 0; j < nColumns(); j++) {
+                if (!(Math.abs(get(i, j).get() - other.get(i, j).get()) < eps)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

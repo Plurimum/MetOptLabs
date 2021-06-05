@@ -10,6 +10,10 @@ public class BFShMethod<F extends NFunction> extends AbstractQuasiNewton<F>{
         super(function);
     }
 
+    public BFShMethod(F function, Vector start) {
+        super(function, start);
+    }
+
     @Override
     protected DoubleMatrix nextG(final DoubleMatrix g, final Vector deltaX, final Vector deltaW) {
         final double scalarRo = g.multiply(deltaW).scalarProduct(deltaW);

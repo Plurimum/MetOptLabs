@@ -1,6 +1,7 @@
 package com.mygdx.newton.test;
 
 import com.mygdx.linear.ArrayMatrix;
+import com.mygdx.linear.Matrix;
 import com.mygdx.methods.GoldenSectionMethod;
 import com.mygdx.newton.*;
 import com.mygdx.nmethods.GradientMethod;
@@ -49,6 +50,13 @@ public class NewtonTest {
                     "(x * x + y - 11) * (x * x + y - 11) + (x + y * y - 7) * (x + y * y - 7)",
                     baseStartPoint(),
                     new Vector(Arrays.asList(3., 2.))
+            ),
+            new ResearchTriple(
+                    "(x + 10 * y) * (x + 10 * y) + 5 * (z - t) * (z - t) + " +
+                            "(y - 2 * z) * (y - 2 * z) *(y - 2 * z) *(y - 2 * z) + " +
+                            "10 * (x - t) * (x - t) * (x - t) * (x - t)",
+                    new Vector(Arrays.asList(0., 0., 0., 0.)),
+                    new Vector(Arrays.asList(0., 0., 0., 0.))
             )
     );
 
@@ -85,8 +93,29 @@ public class NewtonTest {
     }
 
     @Test
+    void cholesky() {
+        final Matrix a = new ArrayMatrix(Arrays.asList(
+                new Vector(Arrays.asList(4., 12., -16.)),
+                new Vector(Arrays.asList(12., 37., -43.)),
+                new Vector(Arrays.asList(-16., -43., 98.))));
+        final CholeskyDecomposition dec = new CholeskyDecomposition(a);
+        final Matrix b = dec.getL().multiply(dec.getTransposedL());
+        for (int i = 0; i < a.nRows(); i++) {
+            for (int j = 0; j < a.nColumns(); j++) {
+                assertEquals(a.get(i, j).get(), b.get(i, j).get(), eps);
+            }
+        }
+
+    }
+
+    @Test
     void marquardtFirst() {
         functions.forEach(fun -> parseAndCheck(fun, MarquardtMethodFirst::new));
+    }
+
+    @Test
+    void marquardtSecond() {
+        functions.forEach(fun -> parseAndCheck(fun, MarquardtMethodSecond::new));
     }
 
     @Test
@@ -121,13 +150,14 @@ public class NewtonTest {
 
     private void checkLabFuncSecond(ResearchTriple triple) {
         Function<NMethod, Double> f = method -> method.findMin(eps).add(triple.ans.multiply(-1)).length();
+        System.out.println("TESTING " + triple.func);
         assertEquals(
                 0.,
-                f.apply(new BFShMethod<>(new NewtonFunction(triple.func))),
+                f.apply(new BFShMethod<>(new NewtonFunction(triple.func), triple.start)),
                 eps);
         assertEquals(
                 0.,
-                f.apply(new PowellMethod<>(new NewtonFunction(triple.func))),
+                f.apply(new PowellMethod<>(new NewtonFunction(triple.func), triple.start)),
                 eps);
     }
 
@@ -145,7 +175,7 @@ public class NewtonTest {
         final NMethod method = newtonFactory.apply(f);
         final Vector expected = new GradientMethod<>(f).findMin(eps);
         final AtomicReference<Vector> res = new AtomicReference<>();
-        assertTimeoutPreemptively(ofSeconds(5), () -> {
+        assertTimeoutPreemptively(ofSeconds(20), () -> {
             res.set(method.findMin(eps));;
         });
         System.out.println("Iterations: " + f.getIterations());
