@@ -22,6 +22,11 @@ public class OptimizedNewton <F extends NewtonFunction> extends AbstractNMethod<
         this.methodFactory = GoldenSectionMethod::new;
     }
 
+    public OptimizedNewton(final F function) {
+        super(function);
+        this.methodFactory = GoldenSectionMethod::new;
+    }
+
     @Override
     public Value<Vector, Double> nextIteration(final Value<Vector, Double> x, final double eps) {
         final Vector gradient = getFunction().gradient(x.getValue());

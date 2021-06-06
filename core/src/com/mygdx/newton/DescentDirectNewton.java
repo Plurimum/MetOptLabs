@@ -16,6 +16,10 @@ public class DescentDirectNewton <F extends NewtonFunction> extends OptimizedNew
         super(function, start);
     }
 
+    public DescentDirectNewton(final F function) {
+        super(function);
+    }
+
     @Override
     public Value<Vector, Double> nextIteration(Value<Vector, Double> x, double eps) {
         final Vector gradient = getFunction().gradient(x.getValue());

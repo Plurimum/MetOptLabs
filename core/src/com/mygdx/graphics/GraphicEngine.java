@@ -14,6 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.methods.BrentCombMethod;
+import com.mygdx.newton.ClassicNewtonMethod;
+import com.mygdx.newton.MarquardtMethodFirst;
+import com.mygdx.newton.MarquardtMethodSecond;
+import com.mygdx.newton.OptimizedNewton;
 import com.mygdx.nmethods.AbstractNMethod;
 import com.mygdx.nmethods.GradientMethod;
 import com.mygdx.nmethods.GradientOpt;
@@ -36,7 +40,7 @@ public class GraphicEngine extends ApplicationAdapter {
 
 
     private void inputFunction(final String title) {
-        Gdx.input.getTextInput(inputFunction, title, "10*x*x - x*y + y*y - 2*x + y + 8", "");
+        Gdx.input.getTextInput(inputFunction, title, "(x * x + y - 11)^2 + (x + y * y - 7)^2", "");
     }
 
     private void inputEps(final String title) {
@@ -113,9 +117,9 @@ public class GraphicEngine extends ApplicationAdapter {
         inputMultiplexer.addProcessor(graphic);
         inputMultiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
-        addButtonMethod("gradient-method", 1100, 800, GradientMethod::new);
-        addButtonMethod("optimized-gradient", 1100, 650, func -> new GradientOpt<>(func, BrentCombMethod::new));
-        // addButtonMethod("conjugate-gradient", 1100, 500, NonlinearConjugateGradientMethod::new);
+        addButtonMethod("gradient-method", 1100, 800, MarquardtMethodFirst::new);
+        addButtonMethod("optimized-gradient", 1100, 650, MarquardtMethodSecond::new);
+        addButtonMethod("conjugate-gradient", 1100, 500, OptimizedNewton::new);
         addButton("change-function", 1100, 350, () -> inputFunction("Input function"));
         addButton("level-lines-toggle", 1500, 350, () -> graphic.draw_levels = !graphic.draw_levels);
     }

@@ -1,12 +1,16 @@
 package com.mygdx.newton;
 
+import com.mygdx.linear.ArrayMatrix;
 import com.mygdx.linear.Matrix;
 import com.mygdx.linear.SystemSolveMatrix;
 import com.mygdx.nmethods.AbstractNMethod;
+import com.mygdx.nmethods.DiagonalMatrixImpl;
 import com.mygdx.nmethods.Value;
 import com.mygdx.nmethods.Vector;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class MarquardtMethodFirst<F extends NewtonFunction> extends AbstractNMethod<F> {
@@ -17,6 +21,9 @@ public class MarquardtMethodFirst<F extends NewtonFunction> extends AbstractNMet
     public MarquardtMethodFirst(F function) {
         super(function);
     }
+    public MarquardtMethodFirst(F function, final Vector start) {
+        super(function, start);
+    }
 
     @Override
     public Value<Vector, Double> nextIteration(Value<Vector, Double> x, double eps) {
@@ -25,15 +32,15 @@ public class MarquardtMethodFirst<F extends NewtonFunction> extends AbstractNMet
         double tau = tau0;
         Vector p;
         Value<Vector, Double> y;
+        //System.out.println(tau);
         do {
-            final double fTau = tau;
-            IntStream.range(0, hesse.nColumns()).forEach(i ->
-                    hesse.get(i, i).set(hesse.get(i, i).get() + fTau));
-            p = new Vector(hesse.solve(gradient.multiply(-1)));
+            SystemSolveMatrix sum = hesse.add(new ArrayMatrix(new DiagonalMatrixImpl(Collections.nCopies(hesse.nColumns(), tau))));
+            p = new Vector(sum.solve(gradient.multiply(-1)));
             y = new Value<>(x.getValue().add(p), getFunction());
             tau /= beta;
         } while (y.getFValue() > x.getFValue());
-        tau0 = tau0 * beta;
+        tau0 = tau0 * beta * beta;
+        System.out.println(y.getValue());
         if (p.length() < eps) {
             return null;
         }
@@ -42,7 +49,7 @@ public class MarquardtMethodFirst<F extends NewtonFunction> extends AbstractNMet
 
     @Override
     public Vector findMin(double eps) {
-        tau0 = 1;
+        tau0 = 1e+4;
         beta = 0.5;
         return super.findMin(eps);
     }

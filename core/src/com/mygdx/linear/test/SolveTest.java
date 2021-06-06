@@ -3,15 +3,19 @@ package com.mygdx.linear.test;
 import com.mygdx.linear.*;
 import com.mygdx.linear.bonus.CSRMatrix;
 import com.mygdx.linear.bonus.HashMapMatrix;
+import com.mygdx.newton.CholeskyDecomposition;
 import com.mygdx.nmethods.Vector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SolveTest {
 
@@ -55,6 +59,29 @@ public class SolveTest {
         IntStream.range(0, size).forEach(i -> {
             Assertions.assertEquals(expected.get(i), actual.get(i), eps);
         });
+    }
+
+    @Test
+    void cholesky() {
+        final Matrix a = new ArrayMatrix(Arrays.asList(
+                new Vector(Arrays.asList(4., 12., -16.)),
+                new Vector(Arrays.asList(12., 37., -43.)),
+                new Vector(Arrays.asList(-16., -43., 98.))));
+        final CholeskyDecomposition dec = new CholeskyDecomposition(a);
+        final Matrix b = dec.getL().multiply(dec.getTransposedL());
+        for (int i = 0; i < a.nRows(); i++) {
+            for (int j = 0; j < a.nColumns(); j++) {
+                assertEquals(a.get(i, j).get(), b.get(i, j).get(), eps);
+            }
+        }
+        final List<Double> expected = Collections.nCopies(a.nRows(), 98174.);
+        final List<Double> free = generateFree(dec.getL(), expected);
+
+        final List<Double> actual = dec.getL().solve(free);
+        IntStream.range(0, 3).forEach(i -> {
+            Assertions.assertEquals(expected.get(i), actual.get(i), eps);
+        });
+
     }
 
 //    @Test

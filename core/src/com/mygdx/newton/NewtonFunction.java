@@ -9,6 +9,7 @@ import com.mygdx.parser.ExpressionAlgebra;
 import com.mygdx.parser.ExpressionParser;
 import com.mygdx.parser.expression.Expression;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class NewtonFunction implements NFunction {
     public NewtonFunction(final Expression expression) {
         this.expression = expression;
         this.variables = expression.getVariables();
+        System.out.println(variables);
         gradient = variables.stream().map(expression::derivative).collect(Collectors.toList());
         hesse = gradient.stream().map(f -> variables.stream().map(f::derivative).collect(Collectors.toList()))
                 .collect(Collectors.toList());
@@ -36,7 +38,7 @@ public class NewtonFunction implements NFunction {
 
     Map<String, Double> getArguments(final List<Double> point) {
         final Map<String, Double> map = new HashMap<>();
-        for (int i = 0; i < point.size(); i++) {
+        for (int i = 0; i < variables.size(); i++) {
             map.put(variables.get(i), point.get(i));
         }
         return map;
@@ -58,7 +60,7 @@ public class NewtonFunction implements NFunction {
         final Map<String, Double> args = getArguments(point);
         final List<List<Double>> s = hesse.stream().map(l -> l.stream().map(f -> f.evaluate(args))
                 .collect(Collectors.toList())).collect(Collectors.toList());
-        return new ProfileMatrix(new ArrayMatrix(s));
+        return new ArrayMatrix(s);
     }
 
     @Override

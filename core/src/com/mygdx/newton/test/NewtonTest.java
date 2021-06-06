@@ -10,6 +10,7 @@ import com.mygdx.nmethods.Vector;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
@@ -27,9 +28,9 @@ public class NewtonTest {
     private final double eps = 1e-6;
     private final List<String> functions = Arrays.asList(
             "72*x^2 - 120*x*y + 72*y^2 + 12*x -30*y + 25",
-            "5*x^2 + 10*y*y + 24*x + 2",
-            "x*x + 2*x*y + 2*y*y + 2*x + 4*y + 3",
-            "228*x*x - 144*x*y + 101*y*y -30*x + 1*y + 3"
+            "5*x^2 + 10*y^2 + 24*x + 2",
+            "x^2 + 2*x*y + 2*y^2 + 2*x + 4*y + 3",
+            "228*x^2 - 144*x*y + 101*y^2 -30*x + 1*y + 3"
     );
     private final List<ResearchTriple> labFunctionsFirst = Arrays.asList(
             new ResearchTriple(
@@ -43,11 +44,11 @@ public class NewtonTest {
     );
     private final List<ResearchTriple> labFunctionsSecond = Arrays.asList(
             new ResearchTriple(
-                    "100*(y - x)*(y - x) + (1 - x)*(1 - x)",
+                    "100*(x2 - x1^2)^2 + (1 - x1)^2",
                     baseStartPoint(),
-                    new Vector(Arrays.asList(1., 1.))),
+                    new Vector(Arrays.asList(1., 1.)))/*,
             new ResearchTriple(
-                    "(x * x + y - 11) * (x * x + y - 11) + (x + y * y - 7) * (x + y * y - 7)",
+                    "(x * x + y - 11)^2 + (x + y * y - 7)^2",
                     baseStartPoint(),
                     new Vector(Arrays.asList(3., 2.))
             ),
@@ -57,7 +58,7 @@ public class NewtonTest {
                             "10 * (x - t) * (x - t) * (x - t) * (x - t)",
                     new Vector(Arrays.asList(0., 0., 0., 0.)),
                     new Vector(Arrays.asList(0., 0., 0., 0.))
-            )
+            )*/
     );
 
     private static class ResearchTriple {
@@ -92,21 +93,7 @@ public class NewtonTest {
         functions.forEach(fun -> parseAndCheck(fun, PowellMethod::new));
     }
 
-    @Test
-    void cholesky() {
-        final Matrix a = new ArrayMatrix(Arrays.asList(
-                new Vector(Arrays.asList(4., 12., -16.)),
-                new Vector(Arrays.asList(12., 37., -43.)),
-                new Vector(Arrays.asList(-16., -43., 98.))));
-        final CholeskyDecomposition dec = new CholeskyDecomposition(a);
-        final Matrix b = dec.getL().multiply(dec.getTransposedL());
-        for (int i = 0; i < a.nRows(); i++) {
-            for (int j = 0; j < a.nColumns(); j++) {
-                assertEquals(a.get(i, j).get(), b.get(i, j).get(), eps);
-            }
-        }
 
-    }
 
     @Test
     void marquardtFirst() {
@@ -116,6 +103,7 @@ public class NewtonTest {
     @Test
     void marquardtSecond() {
         functions.forEach(fun -> parseAndCheck(fun, MarquardtMethodSecond::new));
+        labFunctionsSecond.forEach(this::asdasdasd);
     }
 
     @Test
@@ -126,6 +114,28 @@ public class NewtonTest {
     @Test
     void labFunctionsSecond() {
         labFunctionsSecond.forEach(this::checkLabFuncSecond);
+    }
+
+    @Test
+    void megaUltraEbanutayaFunc() {
+        StringBuilder func = new StringBuilder("100*(x2 - x1^2)^2 + (1 - x1)^2");
+        int size = 100;
+        for (int i = 2; i < size; i++) {
+            func.append(" + 100 * (x").append(i + 1).append(" - x").append(i).append(" ^ 2) ^ 2 + (1 - x").append(i).append(") ^ 2");
+        }
+        /*parseAndCheck(func, MarquardtMethodFirst::new);
+        parseAndCheck(func, MarquardtMethodSecond::new);*/
+        ResearchTriple triple = new ResearchTriple(func.toString(), new Vector(Collections.nCopies(size, 0.)), new Vector(Collections.nCopies(size, 1.)));
+        Function<NMethod, Double> f = method -> method.findMin(eps).add(triple.ans.multiply(-1)).length();
+        System.out.println("TESTING " + triple.func);
+        assertEquals(
+                0.,
+                f.apply(new MarquardtMethodSecond<>(new NewtonFunction(triple.func), triple.start)),
+                eps);
+        assertEquals(
+                0.,
+                f.apply(new MarquardtMethodFirst<>(new NewtonFunction(triple.func), triple.start)),
+                eps);
     }
 
     private void checkLabFuncFirst(ResearchTriple triple) {
@@ -150,6 +160,19 @@ public class NewtonTest {
         assertEquals(
                 0.,
                 f.apply(new PowellMethod<>(new NewtonFunction(triple.func), triple.start)),
+                eps);
+    }
+
+    private void asdasdasd(ResearchTriple triple) {
+        Function<NMethod, Double> f = method -> method.findMin(eps).add(triple.ans.multiply(-1)).length();
+        System.out.println("TESTING " + triple.func);
+        assertEquals(
+                0.,
+                f.apply(new MarquardtMethodFirst<>(new NewtonFunction(triple.func), triple.start)),
+                eps);
+        assertEquals(
+                0.,
+                f.apply(new MarquardtMethodSecond<>(new NewtonFunction(triple.func), triple.start)),
                 eps);
     }
 

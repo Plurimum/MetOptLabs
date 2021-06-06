@@ -3,13 +3,17 @@ package com.mygdx.newton;
 import com.mygdx.linear.ArrayMatrix;
 import com.mygdx.linear.Matrix;
 import com.mygdx.linear.MatrixElement;
+import com.mygdx.linear.SystemSolveMatrix;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CholeskyDecomposition {
 
-    private final Matrix l;
+    private final SystemSolveMatrix l;
 
     public CholeskyDecomposition(final Matrix a) {
-        l = new ArrayMatrix(a.nRows(), a.nColumns());
+        l = new CholeskyMatrix(a.nRows(), a.nColumns());
         for (int i = 0; i < a.nRows(); i++) {
             for (int j = 0; j <= i; ++j) {
                 double sum = 0;
@@ -25,7 +29,7 @@ public class CholeskyDecomposition {
         }
     }
 
-    public Matrix getL() {
+    public SystemSolveMatrix getL() {
         return l;
     }
 
@@ -46,5 +50,31 @@ public class CholeskyDecomposition {
                 return l.nRows();
             }
         };
+    }
+
+    private static class CholeskyMatrix extends ArrayMatrix {
+
+        public CholeskyMatrix(int rows, int columns) {
+            super(rows, columns);
+        }
+
+        @Override
+        public List<Double> solve(final List<Double> free) {
+            final List<Double> result = new ArrayList<>(free);
+            for (int i = 0; i < nRows(); i++) {
+                for (int j = 0; j < i; j++) {
+                    result.set(i, result.get(i) - result.get(j) * get(i, j).get());
+                }
+                result.set(i, result.get(i) / get(i, i).get());
+            }
+
+            for (int i = nColumns() - 1; i >= 0; i--) {
+                for (int j = nColumns() - 1; j > i; j--) {
+                    result.set(i,result.get(i) - result.get(j) * get(j, i).get());
+                }
+                result.set(i, result.get(i) / get(i, i).get());
+            }
+            return result;
+        }
     }
 }

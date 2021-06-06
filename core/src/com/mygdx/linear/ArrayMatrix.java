@@ -96,7 +96,7 @@ public class ArrayMatrix implements SystemSolveMatrix {
             Collections.swap(matrix, i, indMax);
             Collections.swap(result, i, indMax);
 
-            double aii = get(i, i).get();
+            final double aii = get(i, i).get();
             MatrixElementImpl d = new MatrixElementImpl(1 / aii);
             mulVec(i, d);
             result.set(i, result.get(i) * d.get());

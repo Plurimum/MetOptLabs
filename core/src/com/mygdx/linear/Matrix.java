@@ -20,7 +20,7 @@ public interface Matrix {
         return result;
     }
 
-    default Matrix add(final Matrix other) {
+    default ArrayMatrix add(final Matrix other) {
         final ArrayMatrix result = new ArrayMatrix(nRows(), nColumns());
         for (int i = 0; i < nRows(); i++) {
             for (int j = 0; j < other.nColumns(); j++) {
