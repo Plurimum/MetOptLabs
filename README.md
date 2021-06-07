@@ -6,3 +6,7 @@
 [Плотная матрица и метод Гаусса](core/src/com/mygdx/linear/ArrayMatrix.java)
 
 [Сопряженные градиенты](core/src/com/mygdx/linear/bonus/CSRMatrix.java)
+
+Минимизация методами Ньютона, квазиньютоновскими методами и методами Марквардта
+
+[Код методов](core/src/com/mygdx/newton/)
