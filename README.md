@@ -7,6 +7,7 @@
 
 [Сопряженные градиенты](core/src/com/mygdx/linear/bonus/CSRMatrix.java)
 
+# MetOptLab4
 Минимизация методами Ньютона, квазиньютоновскими методами и методами Марквардта
 
 [Код методов](core/src/com/mygdx/newton/)
